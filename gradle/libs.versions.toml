@@ -6,14 +6,27 @@ androidx-core = "1.10.0"
 compose = "1.4.1"
 # https://developer.android.com/jetpack/androidx/releases/lifecycle
 lifecycle = "2.6.1"
+lifecycle-runtime-compose = "2.6.1"
 
 # https://github.com/material-components/material-components-android/releases
 material = "1.6.0-alpha02"
-
 # https://developer.android.com/jetpack/androidx/releases/compose-material3
 material3 = "1.1.0-beta02"
 #  https://developer.android.com/jetpack/androidx/releases/compose-material
 material-icons-extended = "1.4.1"
+
+# https://github.com/google/dagger/releases
+hilt = "2.44"
+compose-hilt-navigation = "1.0.0"
+
+# https://developer.android.com/studio/write/java8-support
+desugaring = "2.0.0"
+
+# https://github.com/raamcosta/compose-destinations/releases
+compose-destinations = "1.8.38-beta"
+
+# https://developer.android.com/jetpack/androidx/releases/room
+room = "2.4.3"
 
 # https://github.com/junit-team/junit4/releases
 junit = "4.13.2"
@@ -36,11 +49,14 @@ gradle-version = "7.4.2"
 # https://github.com/JLLeitschuh/ktlint-gradle/releases
 ktlint = "11.3.1"
 
+devtools-plugin = "1.8.10-1.0.9" # depends on Kotlin version
 kotlin = "1.8.10"
 compose-compiler = "1.4.4"
+
 [libraries]
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle-runtime-compose" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
@@ -48,6 +64,17 @@ compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling
 compose-material = { group = "androidx.compose.material", name = "material", version.ref = "compose" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "material-icons-extended" }
+
+compose-hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "compose-hilt-navigation" }
+hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-kapt = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+
+compose-destinations = { module = "io.github.raamcosta.compose-destinations:animations-core", version.ref = "compose-destinations" }
+compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destinations" }
+
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
@@ -58,11 +85,16 @@ compose-ui-test-junit = { group = "androidx.compose.ui", name = "ui-test-junit4"
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "compose" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
 
+desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugaring" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradle-version" }
 android-library = { id = "com.android.library", version.ref = "gradle-version" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
-ben-manes-versions = { id = "com.github.ben-manes.versions", version.ref = "ben-manes-version"}
+ben-manes-versions = { id = "com.github.ben-manes.versions", version.ref = "ben-manes-version" }
+
+devtools = { id = "com.google.devtools.ksp", version.ref = "devtools-plugin" }

@@ -135,6 +135,7 @@ complexity:
     ignoreDefaultParameters: false
     ignoreDataClasses: true
     ignoreAnnotatedParameter: []
+    ignoreAnnotated:  ['Composable']
   MethodOverloading:
     active: false
     threshold: 6
@@ -172,8 +173,9 @@ complexity:
     thresholdInObjects: 11
     thresholdInEnums: 11
     ignoreDeprecated: false
-    ignorePrivate: false
+    ignorePrivate: true
     ignoreOverridden: false
+    ignoreAnnotated: ['HiltViewModel']
 
 coroutines:
   active: true
@@ -303,7 +305,7 @@ exceptions:
 naming:
   active: true
   BooleanPropertyNaming:
-    active: false
+    active: true
     allowedPattern: '^(is|has|are)'
     ignoreOverridden: true
   ClassNaming:
@@ -355,7 +357,7 @@ naming:
   NoNameShadowing:
     active: true
   NonBooleanPropertyPrefixedWithIs:
-    active: false
+    active: true
   ObjectPropertyNaming:
     active: true
     constantPattern: '[A-Za-z][_A-Za-z0-9]*'
@@ -659,6 +661,7 @@ style:
     allowNonStandardGrouping: false
   UnnecessaryAbstractClass:
     active: true
+    ignoreAnnotated: ['Module']
   UnnecessaryAnnotationUseSiteTarget:
     active: false
   UnnecessaryApply:
