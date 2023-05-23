@@ -3,7 +3,7 @@ name: Android Build
 on: push
 
 jobs:
-  build:
+  gradle:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
