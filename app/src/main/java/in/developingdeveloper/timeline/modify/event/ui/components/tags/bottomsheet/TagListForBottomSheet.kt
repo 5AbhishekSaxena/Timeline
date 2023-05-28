@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +34,7 @@ import `in`.developingdeveloper.timeline.modify.event.ui.models.SelectableUITag
 fun TagListForBottomSheet(
     viewState: SelectableTagListViewState,
     onTagClick: (Int, SelectableUITag) -> Unit,
+    onAddTagClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -62,6 +65,19 @@ fun TagListForBottomSheet(
                         .padding(vertical = 16.dp),
                     textAlign = TextAlign.Center,
                 )
+
+                if (!viewState.shouldDisplayTags) {
+                    Button(
+                        onClick = onAddTagClick,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(),
+                    ) {
+                        Text("Add Tag")
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
             }
         }
 
@@ -134,6 +150,7 @@ private fun TagListForBottomSheetPreview() {
             TagListForBottomSheet(
                 viewState = viewState,
                 onTagClick = { _, _ -> },
+                onAddTagClick = {},
             )
         }
     }
