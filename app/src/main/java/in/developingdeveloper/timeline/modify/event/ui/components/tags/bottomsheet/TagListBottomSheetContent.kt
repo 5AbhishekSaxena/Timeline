@@ -1,7 +1,9 @@
 package `in`.developingdeveloper.timeline.modify.event.ui.components.tags.bottomsheet
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Card
 import androidx.compose.material3.Surface
@@ -9,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import `in`.developingdeveloper.timeline.core.ui.theme.TimelineTheme
 import `in`.developingdeveloper.timeline.modify.event.ui.models.SelectableTagListViewState
 import `in`.developingdeveloper.timeline.modify.event.ui.models.SelectableUITag
@@ -21,14 +24,27 @@ fun TagListBottomSheetContent(
     Card() {
     }
 
-    TagListForBottomSheet(
-        viewState = viewState,
-        onTagClick = onTagClick,
-        onAddTagClick = {},
+    Column(
         modifier = Modifier
             .fillMaxHeight(TagListBottomSheetDefaults.maxHeightPercentage)
             .wrapContentHeight(align = Alignment.Top),
-    )
+    ) {
+        if (viewState.isNewTagAdding) {
+            AddTagFormBottomSheetContent(
+                form = viewState.addTagForm,
+                onLabelValueChange = {},
+                onAddClick = {},
+                onCancelClick = {},
+                modifier = Modifier.padding(16.dp),
+            )
+        } else {
+            TagListForBottomSheet(
+                viewState = viewState,
+                onTagClick = onTagClick,
+                onAddTagClick = {},
+            )
+        }
+    }
 }
 
 @Preview(
