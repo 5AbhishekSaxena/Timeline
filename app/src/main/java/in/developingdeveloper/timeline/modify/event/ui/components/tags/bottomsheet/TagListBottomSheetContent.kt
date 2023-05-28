@@ -19,6 +19,10 @@ import `in`.developingdeveloper.timeline.modify.event.ui.models.SelectableUITag
 fun TagListBottomSheetContent(
     viewState: SelectableTagListViewState,
     onTagClick: (Int, SelectableUITag) -> Unit,
+    onAddTagClick: () -> Unit,
+    onLabelValueChange: (String) -> Unit,
+    onAddTagFormClick: () -> Unit,
+    onCancelFormClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -28,16 +32,16 @@ fun TagListBottomSheetContent(
         if (viewState.isNewTagAdding) {
             AddTagFormBottomSheetContent(
                 form = viewState.addTagForm,
-                onLabelValueChange = {},
-                onAddClick = {},
-                onCancelClick = {},
+                onLabelValueChange = onLabelValueChange,
+                onAddClick = onAddTagFormClick,
+                onCancelClick = onCancelFormClick,
                 modifier = Modifier.padding(16.dp),
             )
         } else {
             TagListForBottomSheet(
                 viewState = viewState,
                 onTagClick = onTagClick,
-                onAddTagClick = {},
+                onAddTagClick = onAddTagClick,
             )
         }
     }
@@ -69,6 +73,10 @@ private fun TagListBottomSheetPreview() {
             TagListBottomSheetContent(
                 viewState = viewState,
                 onTagClick = { _, _ -> },
+                onAddTagClick = {},
+                onLabelValueChange = {},
+                onAddTagFormClick = {},
+                onCancelFormClick = {},
             )
         }
     }
