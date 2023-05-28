@@ -48,6 +48,10 @@ fun ModifyEventContent(
     onCancelClick: () -> Unit,
     onBottomModalSheetDismiss: () -> Unit,
     onTagClick: (Int, SelectableUITag) -> Unit,
+    onAddTagBottomSheetClick: () -> Unit,
+    onAddTagBottomSheetLabelValueChange: (String) -> Unit,
+    onAddTagFormBottomSheetClick: () -> Unit,
+    onCancelFormBottomSheetClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -95,6 +99,10 @@ fun ModifyEventContent(
             TagListBottomSheetContent(
                 viewState = viewState.tagListViewState,
                 onTagClick = onTagClick,
+                onAddTagClick = onAddTagBottomSheetClick,
+                onLabelValueChange = onAddTagBottomSheetLabelValueChange,
+                onAddTagFormClick = onAddTagFormBottomSheetClick,
+                onCancelFormClick = onCancelFormBottomSheetClick,
             )
         }
     }
@@ -168,6 +176,10 @@ private fun ModifyEventContentPreview() {
                 onDoneClick = {},
                 onBottomModalSheetDismiss = {},
                 onTagClick = { _, _ -> },
+                onAddTagBottomSheetClick = {},
+                onAddTagBottomSheetLabelValueChange = {},
+                onAddTagFormBottomSheetClick = {},
+                onCancelFormBottomSheetClick = {},
             )
         }
     }

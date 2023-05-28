@@ -89,6 +89,10 @@ fun ModifyEventScreen(
             )
         },
         onTagClick = viewModel::onTagClick,
+        onAddTagBottomSheetClick = {},
+        onAddTagBottomSheetLabelValueChange = {},
+        onAddTagFormBottomSheetClick = {},
+        onCancelFormBottomSheetClick = {},
     )
 }
 
