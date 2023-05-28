@@ -138,3 +138,43 @@ private fun TagListForBottomSheetPreview() {
         }
     }
 }
+
+// @Preview(
+//    name = "Night Mode",
+//    uiMode = Configuration.UI_MODE_NIGHT_YES,
+// )
+// @Preview(
+//    name = "Day Mode",
+//    uiMode = Configuration.UI_MODE_NIGHT_NO,
+// )
+// @Composable
+// @Suppress("UnusedPrivateMember", "MagicNumber")
+// private fun TagListForBottomSheetPreview(
+//    @PreviewParameter(TagListForBottomSheetPreviewProvider::class)
+//    viewState: SelectableTagListViewState,
+// ) {
+//    TimelineTheme {
+//        Surface {
+//            TagListForBottomSheet(
+//                viewState = viewState,
+//                onTagClick = { _, _ -> },
+//            )
+//        }
+//    }
+// }
+//
+// @Suppress("MagicNumber")
+// class TagListForBottomSheetPreviewProvider : PreviewParameterProvider<SelectableTagListViewState> {
+//    private val tags = (1..10).map {
+//        SelectableUITag(it.toString(), "Tag $it", false)
+//    }
+//
+//    private val viewState = SelectableTagListViewState.Initial
+//
+//    override val values = sequenceOf(
+//        viewState,
+//        viewState.copy(tags = tags),
+//        viewState.copy(isLoading = true),
+//        viewState.copy(errorMessage = "Something went wrong."),
+//    )
+// }
