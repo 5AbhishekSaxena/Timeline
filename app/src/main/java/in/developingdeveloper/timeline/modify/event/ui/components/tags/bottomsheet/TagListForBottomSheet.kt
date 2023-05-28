@@ -37,10 +37,16 @@ fun TagListForBottomSheet(
     Column(
         modifier = modifier,
     ) {
+        Text(
+            text = stringResource(id = R.string.tags),
+            modifier = Modifier.padding(16.dp),
+            style = MaterialTheme.typography.titleLarge,
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 16.dp),
         ) {
             LoadingTagListContent(
                 isLoading = viewState.isLoading,
@@ -51,19 +57,15 @@ fun TagListForBottomSheet(
             if (!viewState.isLoading && message != null) {
                 Text(
                     text = message,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
                     textAlign = TextAlign.Center,
                 )
             }
         }
 
         if (viewState.shouldDisplayTags) {
-            Text(
-                text = stringResource(id = R.string.tags),
-                modifier = Modifier.padding(horizontal = 16.dp),
-                style = MaterialTheme.typography.titleLarge,
-            )
-
             SelectableTagList(
                 tags = viewState.tags,
                 onTagClick = onTagClick,
