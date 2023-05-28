@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,10 +39,9 @@ fun TagListForBottomSheet(
     Column(
         modifier = modifier,
     ) {
-        Text(
+        TitleTagListBottomSheet(
             text = stringResource(id = R.string.tags),
             modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.titleLarge,
         )
 
         Column(
