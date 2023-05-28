@@ -24,6 +24,7 @@ fun TagListBottomSheetContent(
     TagListForBottomSheet(
         viewState = viewState,
         onTagClick = onTagClick,
+        onAddTagClick = {},
         modifier = Modifier
             .fillMaxHeight(TagListBottomSheetDefaults.maxHeightPercentage)
             .wrapContentHeight(align = Alignment.Top),
