@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.Card
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,9 +20,6 @@ fun TagListBottomSheetContent(
     viewState: SelectableTagListViewState,
     onTagClick: (Int, SelectableUITag) -> Unit,
 ) {
-    Card() {
-    }
-
     Column(
         modifier = Modifier
             .fillMaxHeight(TagListBottomSheetDefaults.maxHeightPercentage)
