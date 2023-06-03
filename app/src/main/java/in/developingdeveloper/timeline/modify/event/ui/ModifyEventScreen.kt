@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 @Destination
+@Suppress("LongMethod")
 fun ModifyEventScreen(
     navigator: DestinationsNavigator,
     resultNavigator: ResultBackNavigator<String>,
@@ -89,10 +90,10 @@ fun ModifyEventScreen(
             )
         },
         onTagClick = viewModel::onTagClick,
-        onAddTagBottomSheetClick = {},
-        onAddTagBottomSheetLabelValueChange = {},
-        onAddTagFormBottomSheetClick = {},
-        onCancelFormBottomSheetClick = {},
+        onAddTagBottomSheetClick = viewModel::onAddTagBottomSheetClick,
+        onAddTagBottomSheetLabelValueChange = viewModel::onAddTagBottomSheetLabelValueChange,
+        onAddTagFormBottomSheetClick = viewModel::onAddTagFormBottomSheetClick,
+        onCancelFormBottomSheetClick = viewModel::onCancelFormBottomSheetClick,
     )
 }
 

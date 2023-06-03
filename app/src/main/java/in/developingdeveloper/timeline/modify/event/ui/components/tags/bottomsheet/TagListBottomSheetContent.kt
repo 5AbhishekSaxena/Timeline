@@ -31,7 +31,7 @@ fun TagListBottomSheetContent(
     ) {
         if (viewState.isNewTagAdding) {
             AddTagFormBottomSheetContent(
-                form = viewState.addTagForm,
+                form = viewState.addTagViewState.form,
                 onLabelValueChange = onLabelValueChange,
                 onAddClick = onAddTagFormClick,
                 onCancelClick = onCancelFormClick,
