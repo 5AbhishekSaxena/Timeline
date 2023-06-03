@@ -1,6 +1,6 @@
 package `in`.developingdeveloper.timeline.modify.event.ui.models
 
-import `in`.developingdeveloper.timeline.modify.tag.ui.models.ModifyTagForm
+import `in`.developingdeveloper.timeline.modify.tag.ui.models.ModifyTagViewState
 import `in`.developingdeveloper.timeline.taglist.ui.models.UITag
 
 data class SelectableTagListViewState(
@@ -8,7 +8,7 @@ data class SelectableTagListViewState(
     val isLoading: Boolean,
     private val errorMessage: String?,
     val isNewTagAdding: Boolean,
-    val addTagForm: ModifyTagForm,
+    val addTagViewState: ModifyTagViewState,
 ) {
 
     val isRefreshing: Boolean
@@ -45,13 +45,20 @@ data class SelectableTagListViewState(
         return Initial.copy(errorMessage = errorMessage)
     }
 
+    fun resetFormAndIsNewTagAdding(): SelectableTagListViewState {
+        return this.copy(
+            addTagViewState = ModifyTagViewState.Initial,
+            isNewTagAdding = false,
+        )
+    }
+
     companion object {
         val Initial = SelectableTagListViewState(
             tags = emptyList(),
             isLoading = false,
             errorMessage = null,
             isNewTagAdding = false,
-            addTagForm = ModifyTagForm.Initial,
+            addTagViewState = ModifyTagViewState.Initial,
         )
     }
 }

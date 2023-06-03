@@ -13,6 +13,9 @@ import `in`.developingdeveloper.timeline.modify.event.ui.models.ModifyEventForm
 import `in`.developingdeveloper.timeline.modify.event.ui.models.ModifyEventViewState
 import `in`.developingdeveloper.timeline.modify.event.ui.models.SelectableTagListViewState
 import `in`.developingdeveloper.timeline.modify.event.ui.models.SelectableUITag
+import `in`.developingdeveloper.timeline.modify.tag.domain.exceptions.ModifyTagException
+import `in`.developingdeveloper.timeline.modify.tag.domain.usecases.ModifyTagUseCase
+import `in`.developingdeveloper.timeline.modify.tag.ui.models.ModifyTagViewState
 import `in`.developingdeveloper.timeline.taglist.domain.usecases.GetAllTagsUseCase
 import `in`.developingdeveloper.timeline.taglist.ui.models.UITag
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +32,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ModifyEventViewModel @Inject constructor(
     private val modifyEventUseCase: ModifyEventUseCase,
+    private val modifyTagUseCase: ModifyTagUseCase,
     private val getEventByIdUseCase: GetEventByIdUseCase,
     private val getAllTagsUseCase: GetAllTagsUseCase,
 ) : ViewModel() {
@@ -260,6 +264,119 @@ class ModifyEventViewModel @Inject constructor(
                 form = updatedForm,
                 tagListViewState = it.tagListViewState.copy(tags = updatedSelectableTags),
             )
+        }
+    }
+
+    fun onAddTagBottomSheetClick() {
+        _viewState.update {
+            val currentListViewState = it.tagListViewState
+            val updatedTagListViewState = currentListViewState.copy(isNewTagAdding = true)
+            it.copy(tagListViewState = updatedTagListViewState)
+        }
+    }
+
+    fun onAddTagBottomSheetLabelValueChange(label: String) {
+        _viewState.update {
+            val currentListViewState = it.tagListViewState
+            val updatedAddTagForm =
+                currentListViewState.addTagViewState.form.copy(label = label)
+            val updatedAddTagViewState =
+                currentListViewState.addTagViewState.copy(form = updatedAddTagForm)
+            val updatedTagListViewState =
+                currentListViewState.copy(addTagViewState = updatedAddTagViewState)
+            it.copy(tagListViewState = updatedTagListViewState)
+        }
+    }
+
+    fun onAddTagFormBottomSheetClick() {
+        _viewState.update {
+            val currentAddTagViewState = it.tagListViewState.addTagViewState
+            val updatedAddTagViewState = currentAddTagViewState.copy(
+                isLoading = true,
+                isFormEnabled = false,
+            )
+
+            val updatedTagListViewState =
+                it.tagListViewState.copy(addTagViewState = updatedAddTagViewState)
+
+            it.copy(tagListViewState = updatedTagListViewState)
+        }
+
+        val tagId = generateRandomUUID()
+        val label = _viewState.value.tagListViewState.addTagViewState.form.label
+
+        val tagToCreate = Tag(
+            id = tagId,
+            label = label,
+        )
+
+        viewModelScope.launch {
+            val result = modifyTagUseCase.invoke(tagToCreate, true)
+            val updatedAddFormViewState = getViewStateForModifyTagResult(result)
+
+            _viewState.update {
+                val updatedTagListViewState =
+                    it.tagListViewState.copy(addTagViewState = updatedAddFormViewState)
+
+                it.copy(tagListViewState = updatedTagListViewState)
+            }
+        }
+
+        _viewState.update {
+            val currentAddTagViewState = it.tagListViewState.addTagViewState
+            val updatedAddTagViewState = currentAddTagViewState.copy(
+                isLoading = false,
+                isFormEnabled = true,
+            )
+
+            val updatedTagListViewState =
+                it.tagListViewState.copy(addTagViewState = updatedAddTagViewState)
+
+            it.copy(tagListViewState = updatedTagListViewState)
+        }
+    }
+
+    private fun getViewStateForModifyTagResult(result: Result<Unit>): ModifyTagViewState {
+        val currentAddTagViewState = _viewState.value.tagListViewState.addTagViewState
+
+        return result.fold(
+            onSuccess = {
+                currentAddTagViewState.copy(
+                    isLoading = false,
+                    isFormEnabled = false,
+                    isCompleted = true,
+                )
+            },
+            onFailure = { throwable ->
+
+                when (throwable) {
+                    is ModifyTagException.InvalidLabelException -> {
+                        val updatedForm =
+                            currentAddTagViewState.form.copy(labelErrorMessage = throwable.message)
+                        currentAddTagViewState.copy(form = updatedForm)
+                    }
+
+                    else -> {
+                        val message = throwable.message ?: "Something went wrong."
+
+                        currentAddTagViewState.copy(
+                            isLoading = false,
+                            isFormEnabled = true,
+                            errorMessage = message,
+                        )
+                    }
+                }
+            },
+        )
+    }
+
+    fun onCancelFormBottomSheetClick() {
+        _viewState.update {
+            val updatedAddTagViewState = it
+                .tagListViewState
+                .resetFormAndIsNewTagAdding()
+
+            it.copy(tagListViewState = updatedAddTagViewState)
         }
     }
 }
