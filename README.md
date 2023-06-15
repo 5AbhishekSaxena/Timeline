@@ -1,6 +1,8 @@
 <img src="https://github.com/5AbhishekSaxena/Timeline/assets/19958130/0c8ba8c7-2133-463c-865f-cc4b6f0c4eb3" width="100%"/>
 
 # Timeline
+<img src="https://androidweekly.net/issues/issue-574/badge">
+
 The Timeline project is an Android application designed to help users track and manage their events, add tags to categorize them, and filter events using queries and tags. It aims to provide a convenient way for users to quickly record and recall important moments in their lives.
 
 In our fast-paced lives, it's easy to forget the small but significant events that happen around us. This application addresses that challenge by offering an intuitive and user-friendly interface to capture and organize day-to-day moments effectively.
