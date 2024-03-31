@@ -1,14 +1,16 @@
 package `in`.developingdeveloper.timeline.modify.event.ui.components.tags.bottomsheet
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.Card
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import `in`.developingdeveloper.timeline.core.ui.theme.TimelineTheme
 import `in`.developingdeveloper.timeline.modify.event.ui.models.SelectableTagListViewState
 import `in`.developingdeveloper.timeline.modify.event.ui.models.SelectableUITag
@@ -17,17 +19,32 @@ import `in`.developingdeveloper.timeline.modify.event.ui.models.SelectableUITag
 fun TagListBottomSheetContent(
     viewState: SelectableTagListViewState,
     onTagClick: (Int, SelectableUITag) -> Unit,
+    onAddTagClick: () -> Unit,
+    onLabelValueChange: (String) -> Unit,
+    onAddTagFormClick: () -> Unit,
+    onCancelFormClick: () -> Unit,
 ) {
-    Card() {
-    }
-
-    TagListForBottomSheet(
-        viewState = viewState,
-        onTagClick = onTagClick,
+    Column(
         modifier = Modifier
             .fillMaxHeight(TagListBottomSheetDefaults.maxHeightPercentage)
             .wrapContentHeight(align = Alignment.Top),
-    )
+    ) {
+        if (viewState.isNewTagAdding) {
+            AddTagFormBottomSheetContent(
+                form = viewState.addTagViewState.form,
+                onLabelValueChange = onLabelValueChange,
+                onAddClick = onAddTagFormClick,
+                onCancelClick = onCancelFormClick,
+                contentPadding = PaddingValues(16.dp),
+            )
+        } else {
+            TagListForBottomSheet(
+                viewState = viewState,
+                onTagClick = onTagClick,
+                onAddTagClick = onAddTagClick,
+            )
+        }
+    }
 }
 
 @Preview(
@@ -56,6 +73,10 @@ private fun TagListBottomSheetPreview() {
             TagListBottomSheetContent(
                 viewState = viewState,
                 onTagClick = { _, _ -> },
+                onAddTagClick = {},
+                onLabelValueChange = {},
+                onAddTagFormClick = {},
+                onCancelFormClick = {},
             )
         }
     }
