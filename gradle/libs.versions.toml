@@ -1,29 +1,29 @@
 [versions]
 # https://developer.android.com/jetpack/androidx/releases/activity
-activity-compose = "1.7.0"
+activity-compose = "1.7.2"
 # https://developer.android.com/jetpack/androidx/releases/core
-androidx-core = "1.10.0"
-compose = "1.4.1"
+androidx-core = "1.10.1"
+compose = "1.5.0"
 # https://developer.android.com/jetpack/androidx/releases/lifecycle
-lifecycle = "2.6.1"
-lifecycle-runtime-compose = "2.6.1"
+lifecycle = "2.6.2"
+lifecycle-runtime-compose = "2.6.2"
 
 # https://github.com/material-components/material-components-android/releases
 material = "1.6.0-alpha02"
 # https://developer.android.com/jetpack/androidx/releases/compose-material3
-material3 = "1.1.0-beta02"
+material3 = "1.1.0"
 #  https://developer.android.com/jetpack/androidx/releases/compose-material
-material-icons-extended = "1.4.1"
+material-icons-extended = "1.5.0"
 
 # https://github.com/google/dagger/releases
-hilt = "2.44"
+hilt = "2.46"
 compose-hilt-navigation = "1.0.0"
 
 # https://github.com/raamcosta/compose-destinations/releases
 compose-destinations = "1.8.38-beta"
 
 # https://developer.android.com/jetpack/androidx/releases/room
-room = "2.4.3"
+room = "2.5.0"
 
 # https://github.com/junit-team/junit4/releases
 junit = "4.13.2"
@@ -46,9 +46,9 @@ gradle-version = "7.4.2"
 # https://github.com/JLLeitschuh/ktlint-gradle/releases
 ktlint = "11.3.1"
 
-devtools-plugin = "1.8.10-1.0.9" # depends on Kotlin version
-kotlin = "1.8.10"
-compose-compiler = "1.4.4"
+devtools-plugin = "1.9.10-1.0.13" # depends on Kotlin version
+kotlin = "1.9.10"
+compose-compiler = "1.5.3"
 
 [libraries]
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
