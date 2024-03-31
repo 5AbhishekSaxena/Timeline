@@ -2,9 +2,9 @@ package `in`.developingdeveloper.timeline.modify.event.ui.components.tags.bottom
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,12 +25,14 @@ fun AddTagFormBottomSheetContent(
     onAddClick: () -> Unit,
     onCancelClick: () -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues? = null,
 ) {
     Column(
         modifier = modifier,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 8.dp),
         ) {
             BackNavigationIcon(onNavigationIconClick = onCancelClick)
 
@@ -39,13 +41,18 @@ fun AddTagFormBottomSheetContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         ModifyTagForm(
             form = form,
             onLabelValueChange = onLabelValueChange,
             onAddClick = onAddClick,
             onCancelClick = onCancelClick,
+            modifier = Modifier.then(
+                if (contentPadding != null) {
+                    Modifier.padding(contentPadding)
+                } else {
+                    Modifier
+                },
+            ),
         )
     }
 }
@@ -68,6 +75,7 @@ private fun AAddTagFormBottomSheetContentPreview() {
                 onLabelValueChange = {},
                 onAddClick = {},
                 onCancelClick = {},
+                contentPadding = PaddingValues(16.dp),
             )
         }
     }

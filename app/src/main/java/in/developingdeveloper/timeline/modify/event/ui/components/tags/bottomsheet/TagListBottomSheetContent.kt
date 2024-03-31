@@ -2,8 +2,8 @@ package `in`.developingdeveloper.timeline.modify.event.ui.components.tags.bottom
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -35,7 +35,7 @@ fun TagListBottomSheetContent(
                 onLabelValueChange = onLabelValueChange,
                 onAddClick = onAddTagFormClick,
                 onCancelClick = onCancelFormClick,
-                modifier = Modifier.padding(16.dp),
+                contentPadding = PaddingValues(16.dp),
             )
         } else {
             TagListForBottomSheet(
