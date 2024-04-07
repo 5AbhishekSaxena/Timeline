@@ -40,8 +40,6 @@ class ModifyEventViewModel @Inject constructor(
     private val _viewState = MutableStateFlow(ModifyEventViewState.Initial)
     val viewState = _viewState.asStateFlow()
 
-    private var isNewEvent: Boolean = true
-
     private var areTagsLoaded = false
 
     private var eventId: String? = null
@@ -53,7 +51,7 @@ class ModifyEventViewModel @Inject constructor(
     }
 
     private fun getEventDetailsForExistingEvent() {
-        if (isNewEvent) return
+        if (_viewState.value.isNewEvent) return
 
         val eventId = eventId ?: return
 
@@ -91,7 +89,7 @@ class ModifyEventViewModel @Inject constructor(
     }
 
     private fun setIsNewEvent(isNewEvent: Boolean) {
-        this.isNewEvent = isNewEvent
+        _viewState.update { it.copy(isNewEvent = isNewEvent) }
     }
 
     fun onTitleValueChange(title: String) {
@@ -186,7 +184,7 @@ class ModifyEventViewModel @Inject constructor(
             val eventId = eventId ?: generateRandomUUID()
             val eventToCreate = _viewState.value.form.toEvent(eventId)
 
-            val result = modifyEventUseCase.invoke(eventToCreate, isNewEvent)
+            val result = modifyEventUseCase.invoke(eventToCreate, _viewState.value.isNewEvent)
             _viewState.value = getViewStateForModifyEventResult(result)
 
             _viewState.update { it.copy(isLoading = false, formEnabled = true) }
@@ -211,7 +209,7 @@ class ModifyEventViewModel @Inject constructor(
                     )
                 } else {
                     val defaultErrorMessage =
-                        if (isNewEvent) "Error storing event." else "Error updating event"
+                        if (_viewState.value.isNewEvent) "Error storing event." else "Error updating event"
 
                     val errorMessage = throwable.message ?: defaultErrorMessage
                     currentViewState.copy(
