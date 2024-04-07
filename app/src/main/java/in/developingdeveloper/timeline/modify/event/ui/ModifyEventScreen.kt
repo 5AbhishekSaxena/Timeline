@@ -62,6 +62,15 @@ fun ModifyEventScreen(
         }
     }
 
+    LaunchedEffect(key1 = viewState.isDeleted) {
+        if (viewState.isDeleted) {
+            resultNavigator.navigateBack(
+                result = "Event deleted successfully.",
+                onlyIfResumed = true,
+            )
+        }
+    }
+
     DisposableEffect(key1 = Unit) {
         onDispose {
             hideModalBottomSheet(
@@ -76,6 +85,7 @@ fun ModifyEventScreen(
         modalBottomSheetState = modalBottomSheetState,
         snackbarHostState = snackbarHostState,
         viewState = viewState,
+        onDeleteClick = viewModel::onDeleteClick,
         onTitleValueChange = viewModel::onTitleValueChange,
         onOccurredValueChange = viewModel::onOccurredValueChange,
         onModifyTagsClick = viewModel::onModifyTagsClick,
