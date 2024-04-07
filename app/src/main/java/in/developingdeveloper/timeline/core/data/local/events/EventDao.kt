@@ -45,6 +45,9 @@ interface EventDao {
     @Delete
     suspend fun deleteEventWithTag(event: EventTagCrossRef)
 
+    @Query("DELETE FROM events WHERE event_id = :eventId")
+    suspend fun deleteEvent(eventId: String)
+
     @Transaction
     @Suppress("TooGenericExceptionThrown")
     suspend fun updateEventWithTags(eventWithTags: PersistableEventWithTags) {

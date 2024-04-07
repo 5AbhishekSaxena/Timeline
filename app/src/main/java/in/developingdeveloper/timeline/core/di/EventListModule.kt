@@ -12,10 +12,14 @@ import `in`.developingdeveloper.timeline.eventlist.domain.usescases.DefaultGetAl
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GetAllEventsUseCase
 import `in`.developingdeveloper.timeline.modify.event.domain.repositories.AddEventRepository
 import `in`.developingdeveloper.timeline.modify.event.domain.repositories.DefaultAddEventRepository
+import `in`.developingdeveloper.timeline.modify.event.domain.repositories.DefaultDeleteEventRepository
 import `in`.developingdeveloper.timeline.modify.event.domain.repositories.DefaultUpdateEventRepository
+import `in`.developingdeveloper.timeline.modify.event.domain.repositories.DeleteEventRepository
 import `in`.developingdeveloper.timeline.modify.event.domain.repositories.UpdateEventRepository
+import `in`.developingdeveloper.timeline.modify.event.domain.usecases.DefaultDeleteEventUseCase
 import `in`.developingdeveloper.timeline.modify.event.domain.usecases.DefaultGetEventByIdUseCase
 import `in`.developingdeveloper.timeline.modify.event.domain.usecases.DefaultModifyEventUseCase
+import `in`.developingdeveloper.timeline.modify.event.domain.usecases.DeleteEventUseCase
 import `in`.developingdeveloper.timeline.modify.event.domain.usecases.GetEventByIdUseCase
 import `in`.developingdeveloper.timeline.modify.event.domain.usecases.ModifyEventUseCase
 import javax.inject.Singleton
@@ -65,4 +69,16 @@ abstract class EventListModule {
     abstract fun bindModifyEventUseCase(
         modifyEventUseCase: DefaultModifyEventUseCase,
     ): ModifyEventUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindDeleteEventUseCase(
+        deleteEventUseCase: DefaultDeleteEventUseCase,
+    ): DeleteEventUseCase
+
+    @Binds
+    @Singleton
+    abstract fun deleteEventRepository(
+        deleteEventRepository: DefaultDeleteEventRepository,
+    ): DeleteEventRepository
 }

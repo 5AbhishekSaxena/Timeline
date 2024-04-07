@@ -7,6 +7,7 @@ import `in`.developingdeveloper.timeline.core.domain.event.models.Event
 import `in`.developingdeveloper.timeline.core.domain.tags.models.Tag
 import `in`.developingdeveloper.timeline.core.utils.generateRandomUUID
 import `in`.developingdeveloper.timeline.modify.event.domain.exceptions.ModifyEventException
+import `in`.developingdeveloper.timeline.modify.event.domain.usecases.DeleteEventUseCase
 import `in`.developingdeveloper.timeline.modify.event.domain.usecases.GetEventByIdUseCase
 import `in`.developingdeveloper.timeline.modify.event.domain.usecases.ModifyEventUseCase
 import `in`.developingdeveloper.timeline.modify.event.ui.models.ModifyEventForm
@@ -35,6 +36,7 @@ class ModifyEventViewModel @Inject constructor(
     private val modifyTagUseCase: ModifyTagUseCase,
     private val getEventByIdUseCase: GetEventByIdUseCase,
     private val getAllTagsUseCase: GetAllTagsUseCase,
+    private val deleteEventUseCase: DeleteEventUseCase,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(ModifyEventViewState.Initial)
@@ -375,6 +377,25 @@ class ModifyEventViewModel @Inject constructor(
                 .resetFormAndIsNewTagAdding()
 
             it.copy(tagListViewState = updatedAddTagViewState)
+        }
+    }
+
+    fun onDeleteClick() {
+        val eventId = this.eventId ?: return
+        viewModelScope.launch {
+            deleteEventUseCase(eventId)
+                .fold(
+                    onSuccess = {
+                        _viewState.update { it.copy(isDeleted = true) }
+                    },
+                    onFailure = { error ->
+                        val errorMessage = error.message ?: "Failed to delete event."
+
+                        _viewState.update {
+                            it.copy(errorMessage = errorMessage)
+                        }
+                    },
+                )
         }
     }
 }

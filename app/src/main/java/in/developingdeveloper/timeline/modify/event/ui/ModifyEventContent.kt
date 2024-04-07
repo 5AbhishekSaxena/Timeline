@@ -10,8 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -41,6 +45,7 @@ fun ModifyEventContent(
     snackbarHostState: SnackbarHostState,
     viewState: ModifyEventViewState,
     onNavigationIconClick: () -> Unit,
+    onDeleteClick: () -> Unit,
     onTitleValueChange: (String) -> Unit,
     onOccurredValueChange: (String) -> Unit,
     onModifyTagsClick: () -> Unit,
@@ -55,7 +60,11 @@ fun ModifyEventContent(
 ) {
     Scaffold(
         topBar = {
-            ModifyEventTopAppBar(viewState.isNewEvent, onNavigationIconClick)
+            ModifyEventTopAppBar(
+                isNewEvent = viewState.isNewEvent,
+                onNavigationIconClick = onNavigationIconClick,
+                onDeleteClick = onDeleteClick,
+            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { contentPadding ->
@@ -109,12 +118,28 @@ fun ModifyEventContent(
 }
 
 @Composable
-private fun ModifyEventTopAppBar(isNewEvent: Boolean, onNavigationIconClick: () -> Unit) {
+private fun ModifyEventTopAppBar(
+    isNewEvent: Boolean,
+    onNavigationIconClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+) {
     val titleRes = if (isNewEvent) R.string.add_event else R.string.edit_event
     TimelineStartAlignedTopAppBar(
         title = stringResource(id = titleRes),
         navigationIcon = {
             BackNavigationIcon(onNavigationIconClick)
+        },
+        actions = {
+            if (!isNewEvent) {
+                IconButton(
+                    onClick = onDeleteClick,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.DeleteSweep,
+                        contentDescription = null,
+                    )
+                }
+            }
         },
     )
 }
@@ -169,6 +194,7 @@ private fun ModifyEventContentPreview() {
                 snackbarHostState = SnackbarHostState(),
                 viewState = viewState,
                 onNavigationIconClick = {},
+                onDeleteClick = {},
                 onTitleValueChange = {},
                 onOccurredValueChange = {},
                 onModifyTagsClick = {},

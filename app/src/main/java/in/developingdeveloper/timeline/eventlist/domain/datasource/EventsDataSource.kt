@@ -8,4 +8,6 @@ interface EventsDataSource {
     suspend fun getEventById(eventId: String): Event?
     suspend fun addEvent(event: Event)
     suspend fun updateEvent(event: Event)
+
+    suspend fun deleteEvent(eventId: String)
 }
