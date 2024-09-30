@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 interface EventDao {
 
     @Transaction
-    @Query("SELECT * FROM events")
+    @Query("SELECT * FROM events ORDER BY date DESC")
     fun getAllEvents(): Flow<List<PersistableEventWithTags>>
 
     @Transaction
