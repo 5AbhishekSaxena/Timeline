@@ -13,7 +13,7 @@ import `in`.developingdeveloper.timeline.core.data.local.tags.TagDao
 
 @Database(
     entities = [PersistableEvent::class, PersistableTag::class, EventTagCrossRef::class],
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 @TypeConverters(LocalDateTimeTypeConvertor::class)
