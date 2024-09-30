@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.developingdeveloper.timeline.core.domain.tags.models.Tag
 import `in`.developingdeveloper.timeline.core.utils.generateRandomUUID
 import `in`.developingdeveloper.timeline.modify.tag.domain.exceptions.ModifyTagException
+import `in`.developingdeveloper.timeline.modify.tag.domain.usecases.DeleteTagUseCase
 import `in`.developingdeveloper.timeline.modify.tag.domain.usecases.GetTagByIdUseCase
 import `in`.developingdeveloper.timeline.modify.tag.domain.usecases.ModifyTagUseCase
 import `in`.developingdeveloper.timeline.modify.tag.ui.models.ModifyTagViewState
@@ -19,12 +20,11 @@ import javax.inject.Inject
 class ModifyTagViewModel @Inject constructor(
     private val getTagByIdUseCase: GetTagByIdUseCase,
     private val modifyTagUseCase: ModifyTagUseCase,
+    private val deleteTagUseCase: DeleteTagUseCase,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(ModifyTagViewState.Initial)
     val viewState = _viewState.asStateFlow()
-
-    private var isNewTag: Boolean = false
 
     private var tagId: String? = null
 
@@ -39,12 +39,10 @@ class ModifyTagViewModel @Inject constructor(
     }
 
     private fun setIsNewTag(tagId: String?) {
-        isNewTag = tagId == null
+        _viewState.update { it.copy(isNewTag = tagId == null) }
     }
 
     private fun getTagDetailsForExistingTag() {
-        if (isNewTag) return
-
         val tagId = tagId ?: return
 
         viewModelScope.launch {
@@ -122,8 +120,19 @@ class ModifyTagViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            val result = modifyTagUseCase.invoke(tagToCreate, isNewTag)
+            val result = modifyTagUseCase.invoke(tagToCreate, viewState.value.isNewTag)
             _viewState.value = getViewStateForModifyTagResult(result)
+        }
+    }
+
+    fun onDeleteClick() {
+        val tagId = tagId ?: return
+        viewModelScope.launch {
+            deleteTagUseCase(tagId)
+
+            _viewState.update {
+                it.copy(isDeleted = true)
+            }
         }
     }
 }

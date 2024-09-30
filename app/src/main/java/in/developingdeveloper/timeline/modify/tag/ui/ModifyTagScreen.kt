@@ -37,6 +37,15 @@ fun ModifyTagScreen(
         )
     }
 
+    LaunchedEffect(viewState.isDeleted) {
+        if (!viewState.isDeleted) return@LaunchedEffect
+
+        resultNavigator.navigateBack(
+            result = "Tag deleted successfully!",
+            onlyIfResumed = true,
+        )
+    }
+
     val errorMessage = viewState.errorMessage
     LaunchedEffect(key1 = errorMessage) {
         if (errorMessage == null) return@LaunchedEffect
@@ -54,6 +63,10 @@ fun ModifyTagScreen(
             viewModel.onAddClick()
         },
         onCancelClick = { onCancelClick(navigator) },
+        onDeleteClick = {
+            keyboardController?.hide()
+            viewModel.onDeleteClick()
+        },
     )
 }
 

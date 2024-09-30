@@ -2,6 +2,10 @@ package `in`.developingdeveloper.timeline.modify.tag.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -25,10 +29,15 @@ fun ModifyTagContent(
     onLabelValueChange: (String) -> Unit,
     onAddClick: () -> Unit,
     onCancelClick: () -> Unit,
+    onDeleteClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
-            ModifyTagTopBar(onNavigationIconClick)
+            ModifyTagTopBar(
+                isNewTag = viewState.isNewTag,
+                onNavigationIconClick = onNavigationIconClick,
+                onDeleteClick = onDeleteClick,
+            )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { paddingValues ->
@@ -45,13 +54,35 @@ fun ModifyTagContent(
 }
 
 @Composable
-private fun ModifyTagTopBar(onNavigationIconClick: () -> Unit) {
+private fun ModifyTagTopBar(
+    isNewTag: Boolean,
+    onNavigationIconClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+) {
     TimelineStartAlignedTopAppBar(
         title = stringResource(id = R.string.add_tag),
         navigationIcon = {
             BackNavigationIcon(onNavigationIconClick = onNavigationIconClick)
         },
+        actions = {
+            if (!isNewTag) {
+                DeleteTagAction(onClick = onDeleteClick)
+            }
+        },
     )
+}
+
+@Composable
+private fun DeleteTagAction(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier,
+    ) {
+        Icon(Icons.Default.DeleteSweep, contentDescription = null)
+    }
 }
 
 @Preview(
@@ -76,6 +107,7 @@ private fun ModifyTagContentPreview() {
                 onLabelValueChange = {},
                 onAddClick = {},
                 onCancelClick = {},
+                onDeleteClick = {},
             )
         }
     }
