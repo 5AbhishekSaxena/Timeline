@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 
 @Entity(
+    tableName = "event_tag_cross_ref",
     primaryKeys = ["event_id", "tag_id"],
 )
 data class EventTagCrossRef(

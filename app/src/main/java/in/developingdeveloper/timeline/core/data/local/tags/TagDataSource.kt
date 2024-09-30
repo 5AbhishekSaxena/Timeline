@@ -8,4 +8,5 @@ interface TagDataSource {
     fun getAllTags(): Flow<List<Tag>>
     suspend fun getTagById(tagId: String): Tag?
     suspend fun updateTag(tag: Tag)
+    suspend fun deleteTagById(tagId: String)
 }
