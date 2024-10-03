@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import `in`.developingdeveloper.timeline.core.data.local.tags.PersistableTag
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -27,17 +28,15 @@ interface EventDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addEventWithTag(event: EventTagCrossRef)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addEventWithTags(events: List<EventTagCrossRef>)
+
     @Transaction
     suspend fun addEventWithTags(eventWithTags: PersistableEventWithTags) {
         val (event, tags) = eventWithTags
         addEvent(event)
 
-        tags
-            .map {
-                EventTagCrossRef(event.id, it.id)
-            }.forEach {
-                addEventWithTag(it)
-            }
+        addEventTagCrossRef(tags, event)
     }
 
     @Update
@@ -45,6 +44,9 @@ interface EventDao {
 
     @Delete
     suspend fun deleteEventWithTag(event: EventTagCrossRef)
+
+    @Delete
+    suspend fun deleteEventWithTags(events: List<EventTagCrossRef>)
 
     @Transaction
     suspend fun deleteEvent(eventId: String) {
@@ -71,18 +73,25 @@ interface EventDao {
         val addedTags = tags.minus(existingEvent.tags.toSet())
         val removedTags = existingEvent.tags.minus(tags.toSet())
 
-        addedTags
-            .map {
-                EventTagCrossRef(event.id, it.id)
-            }.forEach {
-                addEventWithTag(it)
-            }
+        addEventTagCrossRef(addedTags, event)
+        removeEventTagCrossRef(removedTags, event)
+    }
 
-        removedTags
-            .map {
-                EventTagCrossRef(event.id, it.id)
-            }.forEach {
-                deleteEventWithTag(it)
-            }
+    private suspend fun addEventTagCrossRef(
+        tags: List<PersistableTag>,
+        event: PersistableEvent,
+    ) {
+        tags
+            .map { EventTagCrossRef(event.id, it.id) }
+            .let { addEventWithTags(it) }
+    }
+
+    private suspend fun removeEventTagCrossRef(
+        tags: List<PersistableTag>,
+        event: PersistableEvent,
+    ) {
+        tags
+            .map { EventTagCrossRef(event.id, it.id) }
+            .let { deleteEventWithTags(it) }
     }
 }
