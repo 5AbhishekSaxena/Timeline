@@ -50,9 +50,8 @@ fun ModifyTagForm(
     val labelFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(key1 = form.labelErrorMessage) {
-        if (form.labelErrorMessage != null) {
-            labelFocusRequester.requestFocus()
-        }
+        if (form.labelErrorMessage == null) return@LaunchedEffect
+        labelFocusRequester.requestFocus()
     }
 
     Column(modifier = modifier) {
