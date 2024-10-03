@@ -10,6 +10,7 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
+@SuppressWarnings("TooManyFunctions")
 interface EventDao {
 
     @Transaction
@@ -45,8 +46,17 @@ interface EventDao {
     @Delete
     suspend fun deleteEventWithTag(event: EventTagCrossRef)
 
+    @Transaction
+    suspend fun deleteEvent(eventId: String) {
+        deleteEventCrossRef(eventId)
+        deleteEventById(eventId)
+    }
+
+    @Query("DELETE FROM event_tag_cross_ref WHERE event_id = :eventId")
+    suspend fun deleteEventCrossRef(eventId: String)
+
     @Query("DELETE FROM events WHERE event_id = :eventId")
-    suspend fun deleteEvent(eventId: String)
+    suspend fun deleteEventById(eventId: String)
 
     @Transaction
     @Suppress("TooGenericExceptionThrown")
