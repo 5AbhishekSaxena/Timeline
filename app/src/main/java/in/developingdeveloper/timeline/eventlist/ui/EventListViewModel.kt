@@ -59,10 +59,10 @@ class EventListViewModel @Inject constructor(
     }
 }
 
-private fun List<Event>.toUiEvents(): List<EventListItem.UIEvent> = this.map(Event::toUiEvent)
+private fun List<Event>.toUiEvents(): List<UIEventListItem.Event> = this.map(Event::toUiEvent)
 
-private fun Event.toUiEvent(): EventListItem.UIEvent {
-    return EventListItem.UIEvent(
+private fun Event.toUiEvent(): UIEventListItem.Event {
+    return UIEventListItem.Event(
         id = this.id,
         title = this.title,
         tags = this.tags.toUITags(),

@@ -13,7 +13,7 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import `in`.developingdeveloper.timeline.destinations.ModifyEventScreenDestination
 import `in`.developingdeveloper.timeline.destinations.SettingsScreenDestination
-import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListItem
+import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEventListItem
 
 @Composable
 @Destination
@@ -42,7 +42,8 @@ fun EventListScreen(
     )
 }
 
-private fun onEventListItemClick(navigator: DestinationsNavigator, event: EventListItem.UIEvent) {
+private fun onEventListItemClick(navigator: DestinationsNavigator, event: UIEventListItem) {
+    if (event !is UIEventListItem.Event) return
     navigator.navigate(ModifyEventScreenDestination(eventId = event.id))
 }
 
