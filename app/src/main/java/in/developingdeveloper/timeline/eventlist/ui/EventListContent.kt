@@ -24,14 +24,14 @@ import `in`.developingdeveloper.timeline.R
 import `in`.developingdeveloper.timeline.core.ui.components.TimelineCenterAlignedTopAppBar
 import `in`.developingdeveloper.timeline.core.ui.theme.TimelineTheme
 import `in`.developingdeveloper.timeline.eventlist.ui.components.EventList
+import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListItem
 import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListViewState
-import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEvent
 import java.time.LocalDateTime
 
 @Composable
 fun EventListContent(
     viewState: EventListViewState,
-    onEventListItemClick: (UIEvent) -> Unit,
+    onEventListItemClick: (EventListItem.UIEvent) -> Unit,
     onAddEventClick: () -> Unit,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -102,8 +102,8 @@ private fun EmptyListContent(modifier: Modifier = Modifier) {
 
 @Composable
 private fun EventListContent(
-    events: List<UIEvent>,
-    onEventListItemClick: (UIEvent) -> Unit,
+    events: List<EventListItem.UIEvent>,
+    onEventListItemClick: (EventListItem.UIEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     EventList(
@@ -134,7 +134,7 @@ private fun AddEventFAB(onAddEventClick: () -> Unit) {
 @Composable
 @Suppress("UnusedPrivateMember", "MagicNumber")
 private fun EventListContentPreview() {
-    val event = UIEvent(
+    val event = EventListItem.UIEvent(
         "",
         "Sample title",
         listOf("#Android", "#Kotlin"),

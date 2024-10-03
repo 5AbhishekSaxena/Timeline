@@ -12,13 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import `in`.developingdeveloper.timeline.core.ui.theme.TimelineTheme
-import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEvent
+import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListItem
 import java.time.LocalDateTime
 
 @Composable
 fun EventList(
-    events: List<UIEvent>,
-    onEventListItemClick: (UIEvent) -> Unit,
+    events: List<EventListItem.UIEvent>,
+    onEventListItemClick: (EventListItem.UIEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -46,7 +46,7 @@ fun EventList(
 @Composable
 @Suppress("UnusedPrivateMember", "MagicNumber")
 private fun EventListPreview() {
-    val event = UIEvent(
+    val event = EventListItem.UIEvent(
         "",
         "Sample title",
         listOf("#Android", "#Kotlin"),

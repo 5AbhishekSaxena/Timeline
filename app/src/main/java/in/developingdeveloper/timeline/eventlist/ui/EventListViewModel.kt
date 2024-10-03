@@ -6,8 +6,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
 import `in`.developingdeveloper.timeline.core.domain.tags.models.Tag
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GetAllEventsUseCase
+import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListItem
 import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListViewState
-import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -59,10 +59,10 @@ class EventListViewModel @Inject constructor(
     }
 }
 
-private fun List<Event>.toUiEvents(): List<UIEvent> = this.map(Event::toUiEvent)
+private fun List<Event>.toUiEvents(): List<EventListItem.UIEvent> = this.map(Event::toUiEvent)
 
-private fun Event.toUiEvent(): UIEvent {
-    return UIEvent(
+private fun Event.toUiEvent(): EventListItem.UIEvent {
+    return EventListItem.UIEvent(
         id = this.id,
         title = this.title,
         tags = this.tags.toUITags(),
