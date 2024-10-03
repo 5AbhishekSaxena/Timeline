@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">Timeline</string>
     <string name="add_event">Add Event</string>
+    <string name="add">Add</string>
     <string name="edit_event">Edit Event</string>
+    <string name="update">Update</string>
     <string name="title">Title</string>
     <string name="occurred_on">Occurred On</string>
     <string name="confirm">Confirm</string>

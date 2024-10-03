@@ -166,7 +166,7 @@ private fun Actions(
             onClick = onDoneClick,
             modifier = Modifier.weight(2f),
         ) {
-            val textRes = if (isNewEvent) R.string.add_event else R.string.edit_event
+            val textRes = if (isNewEvent) R.string.add else R.string.update
             Text(
                 text = stringResource(id = textRes),
             )

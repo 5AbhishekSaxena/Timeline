@@ -37,13 +37,20 @@ fun ModifyEventForm(
 ) {
     val titleFocusRequester = remember { FocusRequester() }
 
+    LaunchedEffect(Unit) {
+        titleFocusRequester.requestFocus()
+    }
+
     LaunchedEffect(key1 = form.titleErrorMessage) {
+        if (form.titleErrorMessage == null) return@LaunchedEffect
+
         titleFocusRequester.requestFocus()
     }
 
     val occurredOnFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(key1 = form.occurredOnErrorMessage) {
+        if (form.occurredOnErrorMessage == null) return@LaunchedEffect
         occurredOnFocusRequester.requestFocus()
     }
 
