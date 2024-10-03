@@ -15,13 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,10 +28,6 @@ import `in`.developingdeveloper.timeline.core.ui.components.FormInput
 import `in`.developingdeveloper.timeline.core.ui.components.TimelineOutlinedTextField
 import `in`.developingdeveloper.timeline.core.ui.theme.TimelineTheme
 import `in`.developingdeveloper.timeline.modify.tag.ui.models.ModifyTagForm
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-
-private const val KEYBOARD_SHOW_DELAY = 200L
 
 @Composable
 fun ModifyTagForm(
@@ -44,9 +37,6 @@ fun ModifyTagForm(
     onCancelClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val keyboardController = LocalSoftwareKeyboardController.current
-
     val labelFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
@@ -64,17 +54,7 @@ fun ModifyTagForm(
             onLabelValueChange = onLabelValueChange,
             labelErrorMessage = form.labelErrorMessage,
             modifier = Modifier
-                .focusRequester(labelFocusRequester)
-                .onFocusChanged {
-                    if (it.isFocused) {
-                        coroutineScope.launch {
-                            delay(KEYBOARD_SHOW_DELAY)
-                            keyboardController?.show()
-                        }
-                    } else {
-                        keyboardController?.hide()
-                    }
-                },
+                .focusRequester(labelFocusRequester),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
