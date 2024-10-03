@@ -4,6 +4,10 @@ import java.time.LocalDateTime
 
 sealed class UIEventListItem {
 
+    data class Header(
+        val header: String,
+    ) : UIEventListItem()
+
     data class Event(
         val id: String,
         val title: String,

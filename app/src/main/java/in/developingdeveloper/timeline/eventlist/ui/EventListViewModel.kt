@@ -6,8 +6,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
 import `in`.developingdeveloper.timeline.core.domain.tags.models.Tag
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GetAllEventsUseCase
-import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListItem
 import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListViewState
+import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEventListItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,6 +28,8 @@ class EventListViewModel @Inject constructor(
 
     private val _viewState = MutableStateFlow(EventListViewState.Initial)
     val viewState = _viewState.asStateFlow()
+
+    private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MMMM yyyy")
 
     init {
         getAllEvents()
@@ -49,7 +53,13 @@ class EventListViewModel @Inject constructor(
         return result.fold(
             onSuccess = { events ->
                 val uiEvents = events.toUiEvents()
-                currentViewState.copy(events = uiEvents, loading = false)
+                val uiEventListItems = uiEvents
+                    .groupBy { YearMonth.from(it.date) }
+                    .flatMap { (yearMonth, event) ->
+                        val header: String = dateTimeFormatter.format(yearMonth)
+                        listOf(UIEventListItem.Header(header)) + event
+                    }
+                currentViewState.copy(events = uiEventListItems, loading = false)
             },
             onFailure = {
                 val message = it.message ?: "Something went wrong."
