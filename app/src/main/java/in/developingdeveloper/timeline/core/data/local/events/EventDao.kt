@@ -23,20 +23,20 @@ interface EventDao {
     suspend fun getEventById(eventId: String): PersistableEventWithTags?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addEvent(event: PersistableEvent)
+    suspend fun saveEvent(event: PersistableEvent)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addEventWithTag(event: EventTagCrossRef)
+    suspend fun saveEventWithTag(event: EventTagCrossRef)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addEventWithTags(events: List<EventTagCrossRef>)
+    suspend fun saveEventWithTags(events: List<EventTagCrossRef>)
 
     @Transaction
-    suspend fun addEventWithTags(eventWithTags: PersistableEventWithTags) {
+    suspend fun saveEventWithTags(eventWithTags: PersistableEventWithTags) {
         val (event, tags) = eventWithTags
-        addEvent(event)
+        saveEvent(event)
 
-        addEventTagCrossRef(tags, event)
+        saveEventTagCrossRef(tags, event)
     }
 
     @Update
@@ -73,20 +73,20 @@ interface EventDao {
         val addedTags = tags.minus(existingEvent.tags.toSet())
         val removedTags = existingEvent.tags.minus(tags.toSet())
 
-        addEventTagCrossRef(addedTags, event)
-        removeEventTagCrossRef(removedTags, event)
+        saveEventTagCrossRef(addedTags, event)
+        deleteEventTagCrossRef(removedTags, event)
     }
 
-    private suspend fun addEventTagCrossRef(
+    private suspend fun saveEventTagCrossRef(
         tags: List<PersistableTag>,
         event: PersistableEvent,
     ) {
         tags
             .map { EventTagCrossRef(event.id, it.id) }
-            .let { addEventWithTags(it) }
+            .let { saveEventWithTags(it) }
     }
 
-    private suspend fun removeEventTagCrossRef(
+    private suspend fun deleteEventTagCrossRef(
         tags: List<PersistableTag>,
         event: PersistableEvent,
     ) {
