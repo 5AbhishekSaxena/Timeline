@@ -7,18 +7,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import `in`.developingdeveloper.timeline.core.ui.theme.TimelineTheme
-import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEvent
+import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEventListItem
 import java.time.LocalDateTime
 
 @Composable
 fun EventList(
-    events: List<UIEvent>,
-    onEventListItemClick: (UIEvent) -> Unit,
+    events: List<UIEventListItem>,
+    onEventListItemClick: (UIEventListItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -27,10 +28,16 @@ fun EventList(
         contentPadding = PaddingValues(16.dp),
     ) {
         items(events) { event ->
-            EventListItem(
-                event = event,
-                onClick = { onEventListItemClick(event) },
-            )
+            when (event) {
+                is UIEventListItem.Event -> {
+                    EventListItem(
+                        event = event,
+                        onClick = { onEventListItemClick(event) },
+                    )
+                }
+
+                is UIEventListItem.Header -> Text(text = event.header)
+            }
         }
     }
 }
@@ -46,7 +53,7 @@ fun EventList(
 @Composable
 @Suppress("UnusedPrivateMember", "MagicNumber")
 private fun EventListPreview() {
-    val event = UIEvent(
+    val event = UIEventListItem.Event(
         "",
         "Sample title",
         listOf("#Android", "#Kotlin"),

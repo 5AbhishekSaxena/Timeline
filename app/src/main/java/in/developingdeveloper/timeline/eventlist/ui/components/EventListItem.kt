@@ -21,13 +21,13 @@ import `in`.developingdeveloper.timeline.core.ui.components.tag.TagLabel
 import `in`.developingdeveloper.timeline.core.ui.theme.Gray
 import `in`.developingdeveloper.timeline.core.ui.theme.TimelineTheme
 import `in`.developingdeveloper.timeline.core.utils.formatDateForUI
-import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEvent
+import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEventListItem
 import java.time.LocalDateTime
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EventListItem(
-    event: UIEvent,
+    event: UIEventListItem.Event,
     onClick: () -> Unit,
 ) {
     Card(
@@ -85,7 +85,7 @@ fun EventListItem(
 @Composable
 @Suppress("UnusedPrivateMember", "MagicNumber")
 private fun EventListItemPreview() {
-    val event = UIEvent(
+    val event = UIEventListItem.Event(
         "123",
         "Sample title",
         listOf("#Android", "#Kotlin"),

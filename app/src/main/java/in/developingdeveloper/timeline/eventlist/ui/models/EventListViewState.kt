@@ -1,7 +1,7 @@
 package `in`.developingdeveloper.timeline.eventlist.ui.models
 
 data class EventListViewState(
-    val events: List<UIEvent>,
+    val events: List<UIEventListItem>,
     val loading: Boolean,
     val errorMessage: String?,
 ) {
