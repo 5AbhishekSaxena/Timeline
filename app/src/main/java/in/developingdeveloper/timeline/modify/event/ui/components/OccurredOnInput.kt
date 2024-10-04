@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -45,9 +46,7 @@ fun OccurredOnInput(
     )
 
     LaunchedEffect(key1 = occurredInteractionSourceState) {
-        if (occurredInteractionSourceState) {
-            if (!openDatePickerDialog) openDatePickerDialog = true
-        }
+        if (occurredInteractionSourceState && !openDatePickerDialog) openDatePickerDialog = true
     }
 
     if (openDatePickerDialog) {
@@ -114,5 +113,6 @@ private fun OccurredOnInputField(
         singleLine = true,
         readOnly = true,
         interactionSource = occurredOnInteractionSource,
+        modifier = Modifier.focusProperties { canFocus = false },
     )
 }
