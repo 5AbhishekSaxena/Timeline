@@ -41,15 +41,15 @@ fun OccurredOnInput(
 
     var openDatePickerDialog by remember { mutableStateOf(false) }
 
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = value.toEpochMilli(),
-    )
-
     LaunchedEffect(key1 = occurredInteractionSourceState) {
         if (occurredInteractionSourceState && !openDatePickerDialog) openDatePickerDialog = true
     }
 
     if (openDatePickerDialog) {
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = value.toEpochMilli(),
+        )
+
         OccurredOnDatePickerDialog(
             datePickerState = datePickerState,
             onDismiss = { openDatePickerDialog = false },
