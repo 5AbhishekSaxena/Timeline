@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
@@ -31,6 +32,7 @@ import java.time.LocalDateTime
 @Composable
 fun EventListContent(
     viewState: EventListViewState,
+    onExportEventClick: () -> Unit,
     onEventListItemClick: (UIEventListItem) -> Unit,
     onAddEventClick: () -> Unit,
     onSettingsClick: () -> Unit,
@@ -41,6 +43,7 @@ fun EventListContent(
             TimelineCenterAlignedTopAppBar(
                 title = stringResource(id = R.string.app_name),
                 actions = {
+                    ExportEventsAction(onClick = onExportEventClick)
                     SettingsAction(onClick = onSettingsClick)
                 },
             )
@@ -67,6 +70,16 @@ fun EventListContent(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun ExportEventsAction(onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(
+            imageVector = Icons.Default.IosShare,
+            contentDescription = "Share events",
+        )
     }
 }
 
@@ -152,6 +165,7 @@ private fun EventListContentPreview() {
         Surface {
             EventListContent(
                 viewState = viewState,
+                onExportEventClick = {},
                 onEventListItemClick = {},
                 onAddEventClick = {},
                 onSettingsClick = {},
