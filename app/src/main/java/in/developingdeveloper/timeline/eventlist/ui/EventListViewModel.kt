@@ -1,5 +1,6 @@
 package `in`.developingdeveloper.timeline.eventlist.ui
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -7,6 +8,7 @@ import `in`.developingdeveloper.timeline.core.domain.event.models.Event
 import `in`.developingdeveloper.timeline.core.domain.tags.models.Tag
 import `in`.developingdeveloper.timeline.eventlist.domain.datasource.EventExporterUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GetAllEventsUseCase
+import `in`.developingdeveloper.timeline.eventlist.domain.usescases.SaveDestinationUriUseCase
 import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListViewState
 import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEventListItem
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +29,7 @@ import javax.inject.Inject
 class EventListViewModel @Inject constructor(
     private val getAllEventsUseCase: GetAllEventsUseCase,
     private val eventExporterUseCase: EventExporterUseCase,
+    private val saveDestinationUriUseCase: SaveDestinationUriUseCase,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(EventListViewState.Initial)
@@ -73,41 +76,56 @@ class EventListViewModel @Inject constructor(
 
     fun exportEvents() {
         viewModelScope.launch {
-            _viewState.update { it.copy(isExportingEvents = true) }
-            val result = eventExporterUseCase.invoke()
-            result.fold(
-                onSuccess = {
-                    _viewState.update {
-                        it.copy(
-                            alertMessage = "Events exported successfully.",
-                            isExportingEvents = false,
-                        )
-                    }
-                },
-                onFailure = { error ->
-                    val message = error.message ?: "Something went wrong."
-                    val requestUserForEventExportDestination =
-                        message == "Destination folder uri is null"
-
-                    if (requestUserForEventExportDestination) {
-                        _viewState.update {
-                            it.copy(
-                                requestForEventExportDestination = true,
-                                isExportingEvents = false,
-                            )
-                        }
-                        return@fold
-                    }
-
-                    _viewState.update {
-                        it.copy(
-                            alertMessage = message,
-                            isExportingEvents = false,
-                        )
-                    }
-                },
-            )
+            exportEventsInternal()
         }
+    }
+
+    fun exportEvents(uri: Uri) {
+        viewModelScope.launch {
+            saveDestinationUri(uri.toString())
+            exportEventsInternal()
+        }
+    }
+
+    private suspend fun saveDestinationUri(uri: String) {
+        saveDestinationUriUseCase.invoke(uri)
+    }
+
+    private suspend fun exportEventsInternal() {
+        _viewState.update { it.copy(isExportingEvents = true) }
+        val result = eventExporterUseCase.invoke()
+        result.fold(
+            onSuccess = {
+                _viewState.update {
+                    it.copy(
+                        alertMessage = "Events exported successfully.",
+                        isExportingEvents = false,
+                    )
+                }
+            },
+            onFailure = { error ->
+                val message = error.message ?: "Something went wrong."
+                val requestUserForEventExportDestination =
+                    message == "Destination folder uri is null"
+
+                if (requestUserForEventExportDestination) {
+                    _viewState.update {
+                        it.copy(
+                            requestForEventExportDestination = true,
+                            isExportingEvents = false,
+                        )
+                    }
+                    return@fold
+                }
+
+                _viewState.update {
+                    it.copy(
+                        alertMessage = message,
+                        isExportingEvents = false,
+                    )
+                }
+            },
+        )
     }
 
     fun onEventExportDestinationRequested() {

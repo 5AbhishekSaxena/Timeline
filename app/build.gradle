@@ -80,6 +80,8 @@ dependencies {
     implementation libs.compose.destinations
     ksp libs.compose.destinations.ksp
 
+    implementation libs.data.store
+
     // Room
     implementation libs.room.runtime
     implementation libs.room.ktx

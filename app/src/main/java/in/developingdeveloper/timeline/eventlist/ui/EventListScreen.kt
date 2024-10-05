@@ -39,7 +39,7 @@ fun EventListScreen(
                 Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
             context.contentResolver.takePersistableUriPermission(uri, flags)
-            viewModel.exportEvents()
+            viewModel.exportEvents(uri)
         },
     )
 

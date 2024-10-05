@@ -3,11 +3,12 @@ package `in`.developingdeveloper.timeline.eventlist.domain.datasource
 import android.net.Uri
 import androidx.core.net.toUri
 import `in`.developingdeveloper.timeline.core.data.local.events.export.EventExporterService
+import `in`.developingdeveloper.timeline.eventlist.domain.repositories.ExportDestinationRepository
 import javax.inject.Inject
-import kotlin.random.Random
 
 class DefaultEventExporterUseCase @Inject constructor(
     private val eventExporterService: EventExporterService,
+    private val exportDestinationRepository: ExportDestinationRepository,
 ) : EventExporterUseCase {
 
     override suspend fun invoke(): Result<Unit> {
@@ -17,12 +18,8 @@ class DefaultEventExporterUseCase @Inject constructor(
         return eventExporterService.export(destinationFolderUri)
     }
 
-    private fun getDestinationFolderUri(): Uri? {
-        val hasDestinationUri = Random.nextBoolean()
-        return if (hasDestinationUri) {
-            "content://com.android.externalstorage.documents/tree/primary%3AEvents".toUri()
-        } else {
-            null
-        }
+    private suspend fun getDestinationFolderUri(): Uri? {
+        val destinationUri = exportDestinationRepository.getDestination()
+        return destinationUri?.toUri()
     }
 }
