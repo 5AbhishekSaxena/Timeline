@@ -1,0 +1,43 @@
+package `in`.developingdeveloper.timeline.core.data.local.events.export
+
+import android.content.Context
+import android.net.Uri
+import android.provider.DocumentsContract
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.IOException
+import javax.inject.Inject
+
+class EventExporterService @Inject constructor(
+    @ApplicationContext
+    private val context: Context,
+) {
+    fun export(destinationFolderUri: Uri, onError: (Exception) -> Unit, onFinished: () -> Unit) {
+        val contentResolver = context.contentResolver
+
+        val documentUri = DocumentsContract.buildDocumentUriUsingTree(
+            destinationFolderUri,
+            DocumentsContract.getTreeDocumentId(destinationFolderUri),
+        )
+
+        try {
+            val newFileUri = DocumentsContract.createDocument(
+                contentResolver,
+                documentUri,
+                "text/plain",
+                "event.txt",
+            )
+
+            if (newFileUri == null) return
+
+            contentResolver.openOutputStream(newFileUri)?.use { out ->
+                val content = "Hello World"
+                out.write(content.toByteArray())
+                out.flush()
+            }
+        } catch (exception: IOException) {
+            onError(exception)
+        } finally {
+            onFinished()
+        }
+    }
+}

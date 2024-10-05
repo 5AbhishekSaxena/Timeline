@@ -1,10 +1,12 @@
 package `in`.developingdeveloper.timeline.eventlist.ui
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
 import `in`.developingdeveloper.timeline.core.domain.tags.models.Tag
+import `in`.developingdeveloper.timeline.eventlist.domain.datasource.EventExporterUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GetAllEventsUseCase
 import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListViewState
 import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEventListItem
@@ -24,6 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EventListViewModel @Inject constructor(
     private val getAllEventsUseCase: GetAllEventsUseCase,
+    private val eventExporterUseCase: EventExporterUseCase,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(EventListViewState.Initial)
@@ -64,6 +67,19 @@ class EventListViewModel @Inject constructor(
             onFailure = {
                 val message = it.message ?: "Something went wrong."
                 currentViewState.copy(loading = false, errorMessage = message)
+            },
+        )
+    }
+
+    fun exportEvents(destinationUri: Uri) {
+        eventExporterUseCase.invoke(
+            destinationFolderUri = destinationUri,
+            onError = {
+                // todo: show snackbar!
+                _viewState.update { it.copy(exportEvents = false) }
+            },
+            onFinished = {
+                // todo: show snackbar!
             },
         )
     }
