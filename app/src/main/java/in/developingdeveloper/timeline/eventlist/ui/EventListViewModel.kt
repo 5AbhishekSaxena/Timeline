@@ -71,10 +71,16 @@ class EventListViewModel @Inject constructor(
     }
 
     fun exportEvents() {
+        _viewState.update { it.copy(isExportingEvents = true) }
         val result = eventExporterUseCase.invoke()
         result.fold(
             onSuccess = {
-                _viewState.update { it.copy(alertMessage = "Events exported successfully.") }
+                _viewState.update {
+                    it.copy(
+                        alertMessage = "Events exported successfully.",
+                        isExportingEvents = false,
+                    )
+                }
             },
             onFailure = { error ->
                 val message = error.message ?: "Something went wrong."
@@ -82,17 +88,23 @@ class EventListViewModel @Inject constructor(
                     message == "Destination folder uri is null"
 
                 if (requestUserForEventExportDestination) {
-                    requestForEventExportDestination()
+                    _viewState.update {
+                        it.copy(
+                            requestForEventExportDestination = true,
+                            isExportingEvents = false,
+                        )
+                    }
                     return
                 }
 
-                _viewState.update { it.copy(alertMessage = message) }
+                _viewState.update {
+                    it.copy(
+                        alertMessage = message,
+                        isExportingEvents = false,
+                    )
+                }
             },
         )
-    }
-
-    private fun requestForEventExportDestination() {
-        _viewState.update { it.copy(requestForEventExportDestination = true) }
     }
 
     fun onEventExportDestinationRequested() {

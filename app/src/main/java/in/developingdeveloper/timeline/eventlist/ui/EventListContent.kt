@@ -57,7 +57,10 @@ fun EventListContent(
             TimelineCenterAlignedTopAppBar(
                 title = stringResource(id = R.string.app_name),
                 actions = {
-                    ExportEventsAction(onClick = onExportEventClick)
+                    ExportEventsAction(
+                        enabled = !viewState.isExportingEvents,
+                        onClick = onExportEventClick,
+                    )
                     SettingsAction(onClick = onSettingsClick)
                 },
             )
@@ -89,8 +92,14 @@ fun EventListContent(
 }
 
 @Composable
-private fun ExportEventsAction(onClick: () -> Unit) {
-    IconButton(onClick = onClick) {
+private fun ExportEventsAction(
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    IconButton(
+        enabled = enabled,
+        onClick = onClick,
+    ) {
         Icon(
             imageVector = Icons.Default.IosShare,
             contentDescription = "Share events",
@@ -99,7 +108,9 @@ private fun ExportEventsAction(onClick: () -> Unit) {
 }
 
 @Composable
-private fun SettingsAction(onClick: () -> Unit) {
+private fun SettingsAction(
+    onClick: () -> Unit,
+) {
     IconButton(onClick = onClick) {
         Icon(
             imageVector = Icons.Default.Settings,
