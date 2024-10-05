@@ -1,6 +1,5 @@
 package `in`.developingdeveloper.timeline.eventlist.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,12 +74,9 @@ class EventListViewModel @Inject constructor(
         val result = eventExporterUseCase.invoke()
         result.fold(
             onSuccess = {
-                // todo: show snackbar!
-                Log.e(javaClass.name, "exportEvents, Events exported successfully.")
+                _viewState.update { it.copy(alertMessage = "Events exported successfully.") }
             },
             onFailure = { error ->
-                // todo: show snackbar!
-                Log.e(javaClass.name, "exportEvents, Error while exporting events.", error)
                 val message = error.message ?: "Something went wrong."
                 val requestUserForEventExportDestination =
                     message == "Destination folder uri is null"
@@ -90,7 +86,7 @@ class EventListViewModel @Inject constructor(
                     return
                 }
 
-                _viewState.update { it.copy(errorMessage = message) }
+                _viewState.update { it.copy(alertMessage = message) }
             },
         )
     }
@@ -101,6 +97,10 @@ class EventListViewModel @Inject constructor(
 
     fun onEventExportDestinationRequested() {
         _viewState.update { it.copy(requestForEventExportDestination = false) }
+    }
+
+    fun onAlertMessageShown() {
+        _viewState.update { it.copy(alertMessage = null) }
     }
 }
 

@@ -58,6 +58,7 @@ fun EventListScreen(
 
     EventListContent(
         viewState = viewState,
+        onAlertMessageShown = viewModel::onAlertMessageShown,
         onExportEventClick = viewModel::exportEvents,
         onEventListItemClick = { onEventListItemClick(navigator, it) },
         onAddEventClick = { onAddEventClick(navigator) },
