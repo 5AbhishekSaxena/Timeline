@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 
@@ -11,7 +13,7 @@ class EventExporterService @Inject constructor(
     @ApplicationContext
     private val context: Context,
 ) {
-    fun export(destinationFolderUri: Uri): Result<Unit> {
+    suspend fun export(destinationFolderUri: Uri): Result<Unit> = withContext(Dispatchers.IO) {
         val contentResolver = context.contentResolver
 
         val documentUri = DocumentsContract.buildDocumentUriUsingTree(
@@ -19,7 +21,7 @@ class EventExporterService @Inject constructor(
             DocumentsContract.getTreeDocumentId(destinationFolderUri),
         )
 
-        return try {
+        return@withContext try {
             val newFileUri = DocumentsContract.createDocument(
                 contentResolver,
                 documentUri,
@@ -27,7 +29,7 @@ class EventExporterService @Inject constructor(
                 "event.txt",
             )
 
-            if (newFileUri == null) return Result.failure(Exception("File uri is null"))
+            if (newFileUri == null) return@withContext Result.failure(Exception("File uri is null"))
 
             contentResolver.openOutputStream(newFileUri)?.use { out ->
                 val content = "Hello World"

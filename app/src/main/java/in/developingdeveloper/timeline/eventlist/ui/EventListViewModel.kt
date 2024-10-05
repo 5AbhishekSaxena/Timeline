@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -71,40 +72,42 @@ class EventListViewModel @Inject constructor(
     }
 
     fun exportEvents() {
-        _viewState.update { it.copy(isExportingEvents = true) }
-        val result = eventExporterUseCase.invoke()
-        result.fold(
-            onSuccess = {
-                _viewState.update {
-                    it.copy(
-                        alertMessage = "Events exported successfully.",
-                        isExportingEvents = false,
-                    )
-                }
-            },
-            onFailure = { error ->
-                val message = error.message ?: "Something went wrong."
-                val requestUserForEventExportDestination =
-                    message == "Destination folder uri is null"
-
-                if (requestUserForEventExportDestination) {
+        viewModelScope.launch {
+            _viewState.update { it.copy(isExportingEvents = true) }
+            val result = eventExporterUseCase.invoke()
+            result.fold(
+                onSuccess = {
                     _viewState.update {
                         it.copy(
-                            requestForEventExportDestination = true,
+                            alertMessage = "Events exported successfully.",
                             isExportingEvents = false,
                         )
                     }
-                    return
-                }
+                },
+                onFailure = { error ->
+                    val message = error.message ?: "Something went wrong."
+                    val requestUserForEventExportDestination =
+                        message == "Destination folder uri is null"
 
-                _viewState.update {
-                    it.copy(
-                        alertMessage = message,
-                        isExportingEvents = false,
-                    )
-                }
-            },
-        )
+                    if (requestUserForEventExportDestination) {
+                        _viewState.update {
+                            it.copy(
+                                requestForEventExportDestination = true,
+                                isExportingEvents = false,
+                            )
+                        }
+                        return@fold
+                    }
+
+                    _viewState.update {
+                        it.copy(
+                            alertMessage = message,
+                            isExportingEvents = false,
+                        )
+                    }
+                },
+            )
+        }
     }
 
     fun onEventExportDestinationRequested() {

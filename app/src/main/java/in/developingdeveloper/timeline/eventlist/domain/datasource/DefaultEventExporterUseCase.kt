@@ -10,7 +10,7 @@ class DefaultEventExporterUseCase @Inject constructor(
     private val eventExporterService: EventExporterService,
 ) : EventExporterUseCase {
 
-    override fun invoke(): Result<Unit> {
+    override suspend fun invoke(): Result<Unit> {
         val destinationFolderUri = getDestinationFolderUri()
             ?: return Result.failure(Exception("Destination folder uri is null"))
 
