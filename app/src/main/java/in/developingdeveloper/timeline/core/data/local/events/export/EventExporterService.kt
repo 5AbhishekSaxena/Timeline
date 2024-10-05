@@ -11,7 +11,7 @@ class EventExporterService @Inject constructor(
     @ApplicationContext
     private val context: Context,
 ) {
-    fun export(destinationFolderUri: Uri, onError: (Exception) -> Unit, onFinished: () -> Unit) {
+    fun export(destinationFolderUri: Uri): Result<Unit> {
         val contentResolver = context.contentResolver
 
         val documentUri = DocumentsContract.buildDocumentUriUsingTree(
@@ -19,7 +19,7 @@ class EventExporterService @Inject constructor(
             DocumentsContract.getTreeDocumentId(destinationFolderUri),
         )
 
-        try {
+        return try {
             val newFileUri = DocumentsContract.createDocument(
                 contentResolver,
                 documentUri,
@@ -27,17 +27,16 @@ class EventExporterService @Inject constructor(
                 "event.txt",
             )
 
-            if (newFileUri == null) return
+            if (newFileUri == null) return Result.failure(Exception("File uri is null"))
 
             contentResolver.openOutputStream(newFileUri)?.use { out ->
                 val content = "Hello World"
                 out.write(content.toByteArray())
                 out.flush()
             }
+            Result.success(Unit)
         } catch (exception: IOException) {
-            onError(exception)
-        } finally {
-            onFinished()
+            Result.failure(exception)
         }
     }
 }

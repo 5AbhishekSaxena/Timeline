@@ -1,6 +1,6 @@
 package `in`.developingdeveloper.timeline.eventlist.ui
 
-import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -71,17 +71,36 @@ class EventListViewModel @Inject constructor(
         )
     }
 
-    fun exportEvents(destinationUri: Uri) {
-        eventExporterUseCase.invoke(
-            destinationFolderUri = destinationUri,
-            onError = {
+    fun exportEvents() {
+        val result = eventExporterUseCase.invoke()
+        result.fold(
+            onSuccess = {
                 // todo: show snackbar!
-                _viewState.update { it.copy(exportEvents = false) }
+                Log.e(javaClass.name, "exportEvents, Events exported successfully.")
             },
-            onFinished = {
+            onFailure = { error ->
                 // todo: show snackbar!
+                Log.e(javaClass.name, "exportEvents, Error while exporting events.", error)
+                val message = error.message ?: "Something went wrong."
+                val requestUserForEventExportDestination =
+                    message == "Destination folder uri is null"
+
+                if (requestUserForEventExportDestination) {
+                    requestForEventExportDestination()
+                    return
+                }
+
+                _viewState.update { it.copy(errorMessage = message) }
             },
         )
+    }
+
+    private fun requestForEventExportDestination() {
+        _viewState.update { it.copy(requestForEventExportDestination = true) }
+    }
+
+    fun onEventExportDestinationRequested() {
+        _viewState.update { it.copy(requestForEventExportDestination = false) }
     }
 }
 

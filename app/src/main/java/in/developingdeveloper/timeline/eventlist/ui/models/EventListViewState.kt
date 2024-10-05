@@ -4,14 +4,14 @@ data class EventListViewState(
     val events: List<UIEventListItem>,
     val loading: Boolean,
     val errorMessage: String?,
-    val exportEvents: Boolean,
+    val requestForEventExportDestination: Boolean,
 ) {
     companion object {
         val Initial = EventListViewState(
             events = emptyList(),
             loading = false,
             errorMessage = null,
-            exportEvents = false,
+            requestForEventExportDestination = false,
         )
     }
 }
