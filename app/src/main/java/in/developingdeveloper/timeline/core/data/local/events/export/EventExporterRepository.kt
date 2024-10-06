@@ -2,14 +2,12 @@ package `in`.developingdeveloper.timeline.core.data.local.events.export
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import `in`.developingdeveloper.timeline.core.utils.export.excel.EventExporterResult
+import kotlinx.coroutines.flow.Flow
 import java.io.FileNotFoundException
-import java.io.IOException
 import javax.inject.Inject
 
 class EventExporterRepository @Inject constructor(
@@ -17,20 +15,9 @@ class EventExporterRepository @Inject constructor(
     private val context: Context,
     private val eventExporter: ExcelEventsExporter,
 ) {
-    suspend fun export(destinationFolderUri: Uri, events: List<Event>): Result<Unit> {
-        return withContext(Dispatchers.IO) {
-            try {
-                checkIfDestinationDirectoryExists(destinationFolderUri)
-
-                eventExporter.export(destinationFolderUri, events)
-                    .collect {
-                        Log.e(javaClass.name, "export, result: $it")
-                    }
-                Result.success(Unit)
-            } catch (exception: IOException) {
-                Result.failure(exception)
-            }
-        }
+    fun export(destinationFolderUri: Uri, events: List<Event>): Flow<EventExporterResult<String>> {
+        checkIfDestinationDirectoryExists(destinationFolderUri)
+        return eventExporter.export(destinationFolderUri, events)
     }
 
     private fun checkIfDestinationDirectoryExists(destinationFolderUri: Uri) {

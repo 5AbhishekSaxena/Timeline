@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
 import `in`.developingdeveloper.timeline.core.domain.tags.models.Tag
+import `in`.developingdeveloper.timeline.core.utils.export.excel.EventExporterResult
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.EventExporterUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GetAllEventsUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.SaveDestinationUriUseCase
@@ -14,6 +15,7 @@ import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEventListItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -98,42 +100,13 @@ class EventListViewModel @Inject constructor(
             .filterIsInstance<UIEventListItem.Event>()
             .toEvents()
 
-        val result = eventExporterUseCase.invoke(events)
-
-        result.fold(
-            onSuccess = {
-                _viewState.update {
-                    it.copy(
-                        alertMessage = "Events exported successfully.",
-                        isExportingEvents = false,
-                    )
-                }
-            },
-            onFailure = { error ->
-                val message = error.message ?: "Something went wrong."
-
-                val requestUserForEventExportDestination =
-                    message == "Destination folder changed or removed." ||
-                        message == "Destination folder uri is null"
-
-                if (requestUserForEventExportDestination) {
-                    _viewState.update {
-                        it.copy(
-                            requestForEventExportDestination = true,
-                            isExportingEvents = false,
-                        )
-                    }
-                    return@fold
-                }
-
-                _viewState.update {
-                    it.copy(
-                        alertMessage = message,
-                        isExportingEvents = false,
-                    )
-                }
-            },
-        )
+        eventExporterUseCase.invoke(events)
+            .catch {
+                emit(EventExporterResult.Failure(it))
+            }
+            .collect {
+                handleEventExporterResult(it)
+            }
     }
 
     fun onEventExportDestinationRequested() {
@@ -142,6 +115,48 @@ class EventListViewModel @Inject constructor(
 
     fun onAlertMessageShown() {
         _viewState.update { it.copy(alertMessage = null) }
+    }
+
+    private fun handleEventExporterResult(result: EventExporterResult<String>) {
+        when (result) {
+            is EventExporterResult.StatusUpdate -> Unit
+            is EventExporterResult.Success -> handleEventExporterSuccessResult()
+            is EventExporterResult.Failure -> handleEventExporterFailureResult(result)
+        }
+    }
+
+    private fun handleEventExporterSuccessResult() {
+        _viewState.update {
+            it.copy(
+                alertMessage = "Events exported successfully.",
+                isExportingEvents = false,
+            )
+        }
+    }
+
+    private fun handleEventExporterFailureResult(result: EventExporterResult.Failure) {
+        val message = result.error.message ?: "Something went wrong."
+
+        val requestUserForEventExportDestination =
+            message == "Destination folder changed or removed." ||
+                message == "Destination folder uri is null"
+
+        if (requestUserForEventExportDestination) {
+            _viewState.update {
+                it.copy(
+                    requestForEventExportDestination = true,
+                    isExportingEvents = false,
+                )
+            }
+            return
+        }
+
+        _viewState.update {
+            it.copy(
+                alertMessage = message,
+                isExportingEvents = false,
+            )
+        }
     }
 }
 
