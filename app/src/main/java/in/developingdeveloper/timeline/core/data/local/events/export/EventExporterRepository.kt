@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 
-class EventExporterService @Inject constructor(
+class EventExporterRepository @Inject constructor(
     @ApplicationContext
     private val context: Context,
 ) {
