@@ -1,4 +1,4 @@
-package `in`.developingdeveloper.timeline.eventlist.domain.datasource
+package `in`.developingdeveloper.timeline.eventlist.domain.usescases
 
 import android.net.Uri
 import androidx.core.net.toUri

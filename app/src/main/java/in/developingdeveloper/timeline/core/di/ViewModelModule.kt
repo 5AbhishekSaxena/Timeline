@@ -4,11 +4,11 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import `in`.developingdeveloper.timeline.eventlist.domain.datasource.DefaultEventExporterUseCase
-import `in`.developingdeveloper.timeline.eventlist.domain.datasource.EventExporterUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.repositories.DefaultExportDestinationRepository
 import `in`.developingdeveloper.timeline.eventlist.domain.repositories.ExportDestinationRepository
+import `in`.developingdeveloper.timeline.eventlist.domain.usescases.DefaultEventExporterUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.DefaultSaveDestinationUriUseCase
+import `in`.developingdeveloper.timeline.eventlist.domain.usescases.EventExporterUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.SaveDestinationUriUseCase
 
 @Module

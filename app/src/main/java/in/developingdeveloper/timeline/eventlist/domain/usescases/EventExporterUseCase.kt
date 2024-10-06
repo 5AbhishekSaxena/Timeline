@@ -1,4 +1,4 @@
-package `in`.developingdeveloper.timeline.eventlist.domain.datasource
+package `in`.developingdeveloper.timeline.eventlist.domain.usescases
 
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
 

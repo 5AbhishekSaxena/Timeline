@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
 import `in`.developingdeveloper.timeline.core.domain.tags.models.Tag
-import `in`.developingdeveloper.timeline.eventlist.domain.datasource.EventExporterUseCase
+import `in`.developingdeveloper.timeline.eventlist.domain.usescases.EventExporterUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GetAllEventsUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.SaveDestinationUriUseCase
 import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListViewState
