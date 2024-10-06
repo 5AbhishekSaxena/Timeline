@@ -93,7 +93,13 @@ class EventListViewModel @Inject constructor(
 
     private suspend fun exportEventsInternal() {
         _viewState.update { it.copy(isExportingEvents = true) }
-        val result = eventExporterUseCase.invoke()
+
+        val events = viewState.value.events
+            .filterIsInstance<UIEventListItem.Event>()
+            .toEvents()
+
+        val result = eventExporterUseCase.invoke(events)
+
         result.fold(
             onSuccess = {
                 _viewState.update {
@@ -151,4 +157,21 @@ private fun Event.toUiEvent(): UIEventListItem.Event {
 
 private fun List<Tag>.toUITags(): List<String> {
     return this.map { it.label }
+}
+
+private fun List<UIEventListItem.Event>.toEvents(): List<Event> =
+    this.map(UIEventListItem.Event::toEvent)
+
+private fun UIEventListItem.Event.toEvent(): Event {
+    return Event(
+        id = this.id,
+        title = this.title,
+        tags = this.tags.toTags(),
+        date = this.date,
+        createdOn = this.createdOn,
+    )
+}
+
+private fun List<String>.toTags(): List<Tag> {
+    return this.map { Tag("", it) }
 }
