@@ -30,7 +30,7 @@ class ExcelEventsExporter @Inject constructor(
             )
 
             events.forEachIndexed { index, event ->
-                eventsMap[index.toString()] = event.maptoArray(index)
+                eventsMap[index.toString()] = event.mapToArray(index)
             }
 
             emit(EventExporterResult.StatusUpdate("Writing events to Excel"))
@@ -88,12 +88,12 @@ class ExcelEventsExporter @Inject constructor(
     }
 }
 
-private fun Event.maptoArray(index: Int): Array<String> {
+private fun Event.mapToArray(index: Int): Array<String> {
     return arrayOf(
         (index + 1).toString(),
         id,
         title,
         date.formatDateTimeWithCompleteData(),
-        tags.joinToString(", "),
+        tags.joinToString(", ") { it.label },
     )
 }
