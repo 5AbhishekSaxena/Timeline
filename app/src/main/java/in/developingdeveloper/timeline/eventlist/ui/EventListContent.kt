@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
@@ -14,9 +15,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,16 +36,31 @@ import java.time.LocalDateTime
 @Composable
 fun EventListContent(
     viewState: EventListViewState,
+    onAlertMessageShown: () -> Unit,
+    onExportEventClick: () -> Unit,
     onEventListItemClick: (UIEventListItem) -> Unit,
     onAddEventClick: () -> Unit,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(viewState.alertMessage) {
+        viewState.alertMessage?.let {
+            snackbarHostState.showSnackbar(message = it)
+            onAlertMessageShown()
+        }
+    }
+
     Scaffold(
         topBar = {
             TimelineCenterAlignedTopAppBar(
                 title = stringResource(id = R.string.app_name),
                 actions = {
+                    ExportEventsAction(
+                        enabled = !viewState.isExportingEvents,
+                        onClick = onExportEventClick,
+                    )
                     SettingsAction(onClick = onSettingsClick)
                 },
             )
@@ -48,6 +68,7 @@ fun EventListContent(
         floatingActionButton = {
             AddEventFAB(onAddEventClick = onAddEventClick)
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         Column(
             modifier = modifier
@@ -71,7 +92,25 @@ fun EventListContent(
 }
 
 @Composable
-private fun SettingsAction(onClick: () -> Unit) {
+private fun ExportEventsAction(
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    IconButton(
+        enabled = enabled,
+        onClick = onClick,
+    ) {
+        Icon(
+            imageVector = Icons.Default.IosShare,
+            contentDescription = "Share events",
+        )
+    }
+}
+
+@Composable
+private fun SettingsAction(
+    onClick: () -> Unit,
+) {
     IconButton(onClick = onClick) {
         Icon(
             imageVector = Icons.Default.Settings,
@@ -152,6 +191,8 @@ private fun EventListContentPreview() {
         Surface {
             EventListContent(
                 viewState = viewState,
+                onAlertMessageShown = {},
+                onExportEventClick = {},
                 onEventListItemClick = {},
                 onAddEventClick = {},
                 onSettingsClick = {},

@@ -8,6 +8,8 @@ compose = "1.5.0"
 lifecycle = "2.6.2"
 lifecycle-runtime-compose = "2.6.2"
 
+documentfile = "1.0.1"
+
 # https://github.com/material-components/material-components-android/releases
 material = "1.6.0-alpha02"
 # https://developer.android.com/jetpack/androidx/releases/compose-material3
@@ -22,8 +24,15 @@ compose-hilt-navigation = "1.0.0"
 # https://github.com/raamcosta/compose-destinations/releases
 compose-destinations = "1.8.38-beta"
 
+# https://developer.android.com/topic/libraries/architecture/datastore#groovy
+data-store = "1.0.0"
+
+
 # https://developer.android.com/jetpack/androidx/releases/room
 room = "2.5.0"
+
+# https://mvnrepository.com/artifact/org.apache.poi/poi
+apache-poi = "5.1.0"
 
 # https://github.com/junit-team/junit4/releases
 junit = "4.13.2"
@@ -58,6 +67,8 @@ androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecyc
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
 
+androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
+
 compose-material = { group = "androidx.compose.material", name = "material", version.ref = "compose" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "material-icons-extended" }
@@ -69,9 +80,14 @@ hilt-kapt = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 compose-destinations = { module = "io.github.raamcosta.compose-destinations:animations-core", version.ref = "compose-destinations" }
 compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destinations" }
 
+data-store = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "data-store" }
+
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
+apache-poi = { group = "org.apache.poi", name = "poi", version.ref = "apache-poi" }
+apache-poi-ooxml = { group = "org.apache.poi", name = "poi-ooxml", version.ref = "apache-poi" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 

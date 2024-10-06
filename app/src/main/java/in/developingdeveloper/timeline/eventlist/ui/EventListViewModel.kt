@@ -1,11 +1,14 @@
 package `in`.developingdeveloper.timeline.eventlist.ui
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
 import `in`.developingdeveloper.timeline.core.domain.tags.models.Tag
+import `in`.developingdeveloper.timeline.eventlist.domain.usescases.EventExporterUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GetAllEventsUseCase
+import `in`.developingdeveloper.timeline.eventlist.domain.usescases.SaveDestinationUriUseCase
 import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListViewState
 import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEventListItem
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +20,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -24,6 +28,8 @@ import javax.inject.Inject
 @HiltViewModel
 class EventListViewModel @Inject constructor(
     private val getAllEventsUseCase: GetAllEventsUseCase,
+    private val eventExporterUseCase: EventExporterUseCase,
+    private val saveDestinationUriUseCase: SaveDestinationUriUseCase,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(EventListViewState.Initial)
@@ -67,6 +73,76 @@ class EventListViewModel @Inject constructor(
             },
         )
     }
+
+    fun exportEvents() {
+        viewModelScope.launch {
+            exportEventsInternal()
+        }
+    }
+
+    fun exportEvents(uri: Uri) {
+        viewModelScope.launch {
+            saveDestinationUri(uri.toString())
+            exportEventsInternal()
+        }
+    }
+
+    private suspend fun saveDestinationUri(uri: String) {
+        saveDestinationUriUseCase.invoke(uri)
+    }
+
+    private suspend fun exportEventsInternal() {
+        _viewState.update { it.copy(isExportingEvents = true) }
+
+        val events = viewState.value.events
+            .filterIsInstance<UIEventListItem.Event>()
+            .toEvents()
+
+        val result = eventExporterUseCase.invoke(events)
+
+        result.fold(
+            onSuccess = {
+                _viewState.update {
+                    it.copy(
+                        alertMessage = "Events exported successfully.",
+                        isExportingEvents = false,
+                    )
+                }
+            },
+            onFailure = { error ->
+                val message = error.message ?: "Something went wrong."
+
+                val requestUserForEventExportDestination =
+                    message == "Destination folder changed or removed." ||
+                        message == "Destination folder uri is null"
+
+                if (requestUserForEventExportDestination) {
+                    _viewState.update {
+                        it.copy(
+                            requestForEventExportDestination = true,
+                            isExportingEvents = false,
+                        )
+                    }
+                    return@fold
+                }
+
+                _viewState.update {
+                    it.copy(
+                        alertMessage = message,
+                        isExportingEvents = false,
+                    )
+                }
+            },
+        )
+    }
+
+    fun onEventExportDestinationRequested() {
+        _viewState.update { it.copy(requestForEventExportDestination = false) }
+    }
+
+    fun onAlertMessageShown() {
+        _viewState.update { it.copy(alertMessage = null) }
+    }
 }
 
 private fun List<Event>.toUiEvents(): List<UIEventListItem.Event> = this.map(Event::toUiEvent)
@@ -83,4 +159,21 @@ private fun Event.toUiEvent(): UIEventListItem.Event {
 
 private fun List<Tag>.toUITags(): List<String> {
     return this.map { it.label }
+}
+
+private fun List<UIEventListItem.Event>.toEvents(): List<Event> =
+    this.map(UIEventListItem.Event::toEvent)
+
+private fun UIEventListItem.Event.toEvent(): Event {
+    return Event(
+        id = this.id,
+        title = this.title,
+        tags = this.tags.toTags(),
+        date = this.date,
+        createdOn = this.createdOn,
+    )
+}
+
+private fun List<String>.toTags(): List<Tag> {
+    return this.map { Tag("", it) }
 }

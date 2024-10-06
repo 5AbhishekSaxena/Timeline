@@ -1,6 +1,9 @@
 package `in`.developingdeveloper.timeline.eventlist.ui
 
+import android.content.Intent
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,6 +30,26 @@ fun EventListScreen(
 
     val context = LocalContext.current
 
+    val exportLocationLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocumentTree(),
+        onResult = { uri ->
+            if (uri == null) return@rememberLauncherForActivityResult
+
+            val flags =
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+
+            context.contentResolver.takePersistableUriPermission(uri, flags)
+            viewModel.exportEvents(uri)
+        },
+    )
+
+    LaunchedEffect(viewState.requestForEventExportDestination) {
+        if (!viewState.requestForEventExportDestination) return@LaunchedEffect
+
+        exportLocationLauncher.launch(null)
+        viewModel.onEventExportDestinationRequested()
+    }
+
     LaunchedEffect(key1 = viewState.errorMessage) {
         viewState.errorMessage?.let {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
@@ -35,6 +58,8 @@ fun EventListScreen(
 
     EventListContent(
         viewState = viewState,
+        onAlertMessageShown = viewModel::onAlertMessageShown,
+        onExportEventClick = viewModel::exportEvents,
         onEventListItemClick = { onEventListItemClick(navigator, it) },
         onAddEventClick = { onAddEventClick(navigator) },
         onSettingsClick = { onSettingsClick(navigator) },
