@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
-import `in`.developingdeveloper.timeline.core.utils.export.excel.ExcelEventsExporter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException

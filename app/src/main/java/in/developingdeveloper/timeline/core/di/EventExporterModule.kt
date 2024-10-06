@@ -4,11 +4,11 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import `in`.developingdeveloper.timeline.core.data.local.events.export.EventsExporter
+import `in`.developingdeveloper.timeline.core.data.local.events.export.ExcelEventsExporter
 import `in`.developingdeveloper.timeline.core.utils.export.excel.DefaultEventFileExporter
 import `in`.developingdeveloper.timeline.core.utils.export.excel.DefaultExcelFileWriter
 import `in`.developingdeveloper.timeline.core.utils.export.excel.EventFileExporter
-import `in`.developingdeveloper.timeline.core.utils.export.excel.EventsExporter
-import `in`.developingdeveloper.timeline.core.utils.export.excel.ExcelEventsExporter
 import `in`.developingdeveloper.timeline.core.utils.export.excel.ExcelFileWriter
 
 @Module
