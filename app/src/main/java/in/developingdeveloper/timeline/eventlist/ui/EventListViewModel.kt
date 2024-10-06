@@ -101,6 +101,8 @@ class EventListViewModel @Inject constructor(
             .toEvents()
 
         eventExporterUseCase.invoke(events)
+            .flowOn(Dispatchers.IO)
+            .distinctUntilChanged()
             .catch {
                 emit(EventExporterResult.Failure(it))
             }
@@ -119,10 +121,14 @@ class EventListViewModel @Inject constructor(
 
     private fun handleEventExporterResult(result: EventExporterResult<String>) {
         when (result) {
-            is EventExporterResult.StatusUpdate -> Unit
+            is EventExporterResult.StatusUpdate -> handleEventExporterStatusUpdateResult(result)
             is EventExporterResult.Success -> handleEventExporterSuccessResult()
             is EventExporterResult.Failure -> handleEventExporterFailureResult(result)
         }
+    }
+
+    private fun handleEventExporterStatusUpdateResult(result: EventExporterResult.StatusUpdate) {
+        _viewState.update { it.copy(alertMessage = result.status) }
     }
 
     private fun handleEventExporterSuccessResult() {

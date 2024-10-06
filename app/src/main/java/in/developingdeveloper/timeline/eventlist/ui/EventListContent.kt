@@ -47,6 +47,7 @@ fun EventListContent(
 
     LaunchedEffect(viewState.alertMessage) {
         viewState.alertMessage?.let {
+            snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(message = it)
             onAlertMessageShown()
         }
