@@ -66,6 +66,8 @@ dependencies {
     implementation libs.compose.ui
     implementation libs.compose.ui.tooling.preview
 
+    implementation libs.androidx.documentfile
+
     // material
     implementation libs.compose.material
     implementation libs.compose.material3

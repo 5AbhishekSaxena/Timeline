@@ -111,8 +111,10 @@ class EventListViewModel @Inject constructor(
             },
             onFailure = { error ->
                 val message = error.message ?: "Something went wrong."
+
                 val requestUserForEventExportDestination =
-                    message == "Destination folder uri is null"
+                    message == "Destination folder changed or removed." ||
+                        message == "Destination folder uri is null"
 
                 if (requestUserForEventExportDestination) {
                     _viewState.update {

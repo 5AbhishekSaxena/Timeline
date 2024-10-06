@@ -8,6 +8,8 @@ compose = "1.5.0"
 lifecycle = "2.6.2"
 lifecycle-runtime-compose = "2.6.2"
 
+documentfile = "1.0.1"
+
 # https://github.com/material-components/material-components-android/releases
 material = "1.6.0-alpha02"
 # https://developer.android.com/jetpack/androidx/releases/compose-material3
@@ -64,6 +66,8 @@ androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lif
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
+
+androidx-documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
 
 compose-material = { group = "androidx.compose.material", name = "material", version.ref = "compose" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
