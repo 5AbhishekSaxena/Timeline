@@ -87,6 +87,10 @@ dependencies {
     implementation libs.room.ktx
     ksp libs.room.compiler
 
+    // Apache POI
+    implementation libs.apache.poi
+    implementation libs.apache.poi.ooxml
+
     testImplementation libs.junit
 
     androidTestImplementation libs.androidx.test.junit

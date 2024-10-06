@@ -25,8 +25,12 @@ compose-destinations = "1.8.38-beta"
 # https://developer.android.com/topic/libraries/architecture/datastore#groovy
 data-store = "1.0.0"
 
+
 # https://developer.android.com/jetpack/androidx/releases/room
 room = "2.5.0"
+
+# https://mvnrepository.com/artifact/org.apache.poi/poi
+apache-poi = "5.1.0"
 
 # https://github.com/junit-team/junit4/releases
 junit = "4.13.2"
@@ -77,6 +81,9 @@ data-store = { group = "androidx.datastore", name = "datastore-preferences", ver
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
+apache-poi = { group = "org.apache.poi", name = "poi", version.ref = "apache-poi" }
+apache-poi-ooxml = { group = "org.apache.poi", name = "poi-ooxml", version.ref = "apache-poi" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
