@@ -7,6 +7,7 @@ data class EventListViewState(
     val errorMessage: String?,
     val isExportingEvents: Boolean,
     val requestForEventExportDestination: Boolean,
+    val exportStatusMessage: String?,
 ) {
     companion object {
         val Initial = EventListViewState(
@@ -16,6 +17,7 @@ data class EventListViewState(
             errorMessage = null,
             isExportingEvents = false,
             requestForEventExportDestination = false,
+            exportStatusMessage = null,
         )
     }
 }
