@@ -4,5 +4,5 @@ import android.net.Uri
 import org.apache.poi.ss.usermodel.Workbook
 
 interface EventFileExporter {
-    suspend fun export(destination: Uri, workbook: Workbook): Result<String>
+    suspend fun export(fileUri: Uri, workbook: Workbook): Result<String>
 }

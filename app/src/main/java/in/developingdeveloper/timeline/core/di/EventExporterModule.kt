@@ -10,6 +10,8 @@ import `in`.developingdeveloper.timeline.core.utils.export.excel.DefaultEventFil
 import `in`.developingdeveloper.timeline.core.utils.export.excel.DefaultExcelFileWriter
 import `in`.developingdeveloper.timeline.core.utils.export.excel.EventFileExporter
 import `in`.developingdeveloper.timeline.core.utils.export.excel.ExcelFileWriter
+import `in`.developingdeveloper.timeline.core.utils.export.excel.FileCreator
+import `in`.developingdeveloper.timeline.core.utils.export.excel.SharedStorageFileCreator
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -19,6 +21,11 @@ abstract class EventExporterModule {
     abstract fun bindEventsExporter(
         eventsExporter: ExcelEventsExporter,
     ): EventsExporter
+
+    @Binds
+    abstract fun bindFileCreator(
+        fileCreator: SharedStorageFileCreator,
+    ): FileCreator
 
     @Binds
     abstract fun bindEventFileExporter(
