@@ -7,7 +7,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
 import `in`.developingdeveloper.timeline.core.domain.tags.models.Tag
 import `in`.developingdeveloper.timeline.core.utils.export.excel.EventExporterResult
+import `in`.developingdeveloper.timeline.core.utils.importer.events.ImportEventTemplateGeneratorResult
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.EventExporterUseCase
+import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GenerateImportEventTemplateUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GetAllEventsUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.SaveDestinationUriUseCase
 import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListViewState
@@ -35,6 +37,7 @@ class EventListViewModel @Inject constructor(
     private val getAllEventsUseCase: GetAllEventsUseCase,
     private val eventExporterUseCase: EventExporterUseCase,
     private val saveDestinationUriUseCase: SaveDestinationUriUseCase,
+    private val generateImportEventTemplateUseCase: GenerateImportEventTemplateUseCase,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(EventListViewState.Initial)
@@ -182,6 +185,46 @@ class EventListViewModel @Inject constructor(
                     exportStatusMessage = null,
                 )
             }
+        }
+    }
+
+    fun onGenerateImportEventTemplateClick(fileUri: Uri) {
+        generateImportEventTemplateUseCase(fileUri)
+            .onEach(::handleGenerateImportEventTemplateResult)
+    }
+
+    private fun handleGenerateImportEventTemplateResult(
+        result: ImportEventTemplateGeneratorResult<String>,
+    ) {
+        when (result) {
+            is ImportEventTemplateGeneratorResult.StatusUpdate ->
+                handleGenerateImportEventTemplateStatusUpdateResult(result)
+            is ImportEventTemplateGeneratorResult.Success ->
+                handleGenerateImportEventTemplateSuccessResult(result)
+            is ImportEventTemplateGeneratorResult.Failure ->
+                handleGenerateImportEventTemplateFailureResult(result)
+        }
+    }
+
+    private fun handleGenerateImportEventTemplateStatusUpdateResult(
+        result: ImportEventTemplateGeneratorResult.StatusUpdate,
+    ) {
+        _viewState.update { it.copy(exportStatusMessage = result.status) }
+    }
+
+    private fun handleGenerateImportEventTemplateSuccessResult(
+        result: ImportEventTemplateGeneratorResult.Success<String>,
+    ) {
+        _viewState.update { it.copy(importEventTemplateFilePath = result.data) }
+    }
+
+    private fun handleGenerateImportEventTemplateFailureResult(
+        result: ImportEventTemplateGeneratorResult.Failure,
+    ) {
+        _viewState.update {
+            it.copy(
+                alertMessage = result.error.message ?: "Failed to export template.",
+            )
         }
     }
 }
