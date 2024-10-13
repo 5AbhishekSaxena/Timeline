@@ -193,8 +193,12 @@ class EventListViewModel @Inject constructor(
         _viewState.update { it.copy(isImportingEvents = true, isImportEventDialogShown = true) }
     }
 
-    fun dismissImportingEventsDialog() {
+    private fun closeImportingEventsDialog() {
         _viewState.update { it.copy(isImportEventDialogShown = false) }
+    }
+
+    fun dismissImportingEventsDialog() {
+        _viewState.update { it.copy(isImportEventDialogShown = false, isImportingEvents = false) }
     }
 
     fun onIsImportingEventsCompleted() {
@@ -208,7 +212,7 @@ class EventListViewModel @Inject constructor(
 
     fun onGenerateImportEventTemplateClick(fileUri: Uri) {
         viewModelScope.launch {
-            dismissImportingEventsDialog()
+            closeImportingEventsDialog()
 
             generateImportEventTemplateUseCase(fileUri)
                 .onEach(::handleGenerateImportEventTemplateResult)
