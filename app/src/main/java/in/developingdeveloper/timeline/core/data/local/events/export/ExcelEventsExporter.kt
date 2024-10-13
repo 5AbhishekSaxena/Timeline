@@ -2,6 +2,7 @@ package `in`.developingdeveloper.timeline.core.data.local.events.export
 
 import android.net.Uri
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
+import `in`.developingdeveloper.timeline.core.utils.ExcelConstants
 import `in`.developingdeveloper.timeline.core.utils.export.excel.EventExporterResult
 import `in`.developingdeveloper.timeline.core.utils.export.excel.EventFileExporter
 import `in`.developingdeveloper.timeline.core.utils.export.excel.ExcelFileWriter
@@ -62,7 +63,7 @@ class ExcelEventsExporter @Inject constructor(
     ) {
         emit(EventExporterResult.StatusUpdate("Saving events to Excel"))
         val fileName = generateFileName()
-        val fileCreatorResult = fileCreator.create(destination, fileName, EXCEL_MIME_TYPE)
+        val fileCreatorResult = fileCreator.create(destination, fileName, ExcelConstants.EXCEL_MIME_TYPE)
         fileCreatorResult.fold(
             onSuccess = {
                 val excelFileExporterResult = exporter.export(destination, workbook)
@@ -111,11 +112,6 @@ class ExcelEventsExporter @Inject constructor(
                 source = EventExporterResult.Failure.Source.WRITER,
             ),
         )
-    }
-
-    companion object {
-        private const val EXCEL_MIME_TYPE =
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     }
 }
 
