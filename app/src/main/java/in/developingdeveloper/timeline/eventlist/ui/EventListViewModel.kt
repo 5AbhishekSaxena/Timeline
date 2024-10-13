@@ -19,6 +19,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -189,8 +190,11 @@ class EventListViewModel @Inject constructor(
     }
 
     fun onGenerateImportEventTemplateClick(fileUri: Uri) {
-        generateImportEventTemplateUseCase(fileUri)
-            .onEach(::handleGenerateImportEventTemplateResult)
+        viewModelScope.launch {
+            generateImportEventTemplateUseCase(fileUri)
+                .onEach(::handleGenerateImportEventTemplateResult)
+                .collect()
+        }
     }
 
     private fun handleGenerateImportEventTemplateResult(
@@ -199,8 +203,10 @@ class EventListViewModel @Inject constructor(
         when (result) {
             is ImportEventTemplateGeneratorResult.StatusUpdate ->
                 handleGenerateImportEventTemplateStatusUpdateResult(result)
+
             is ImportEventTemplateGeneratorResult.Success ->
                 handleGenerateImportEventTemplateSuccessResult(result)
+
             is ImportEventTemplateGeneratorResult.Failure ->
                 handleGenerateImportEventTemplateFailureResult(result)
         }
