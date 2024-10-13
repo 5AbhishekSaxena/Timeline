@@ -7,8 +7,10 @@ import dagger.hilt.android.components.ViewModelComponent
 import `in`.developingdeveloper.timeline.eventlist.domain.repositories.DefaultExportDestinationRepository
 import `in`.developingdeveloper.timeline.eventlist.domain.repositories.ExportDestinationRepository
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.DefaultEventExporterUseCase
+import `in`.developingdeveloper.timeline.eventlist.domain.usescases.DefaultGenerateImportEventTemplateUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.DefaultSaveDestinationUriUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.EventExporterUseCase
+import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GenerateImportEventTemplateUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.SaveDestinationUriUseCase
 
 @Module
@@ -29,4 +31,9 @@ abstract class ViewModelModule {
     abstract fun bindSaveDestinationUriUseCase(
         saveDestinationUriUseCase: DefaultSaveDestinationUriUseCase,
     ): SaveDestinationUriUseCase
+
+    @Binds
+    abstract fun bindGenerateImportEventTemplateUseCase(
+        generateImportEventTemplateUseCase: DefaultGenerateImportEventTemplateUseCase,
+    ): GenerateImportEventTemplateUseCase
 }
