@@ -19,6 +19,8 @@ class ImportEventTemplateGenerator @Inject constructor(
             emit(ImportEventTemplateGeneratorResult.StatusUpdate("Mapping template content."))
 
             val headings = arrayOf(
+                "S.No.",
+                "Id(Please leave blank)",
                 "Title",
                 "Occurred On(YYYY/MM/DD)",
                 "Tags(separate tags using ',')",
