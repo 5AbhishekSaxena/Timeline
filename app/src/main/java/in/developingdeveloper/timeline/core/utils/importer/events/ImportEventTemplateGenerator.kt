@@ -20,7 +20,7 @@ class ImportEventTemplateGenerator @Inject constructor(
 
             val headings = arrayOf(
                 "Title",
-                "Occurred On",
+                "Occurred On(YYYY/MM/DD)",
                 "Tags(separate tags using ',')",
             )
 
