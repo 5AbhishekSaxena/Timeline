@@ -76,7 +76,7 @@ fun EventListScreen(
         onImportEventClick = viewModel::onImportEventClick,
         onImportDialogDismiss = viewModel::dismissImportingEventsDialog,
         onImportDialogGenerateTemplateClick = {
-            importEventsGalleryLauncher.launch("Import Events Template.xlsx")
+            importEventsGalleryLauncher.launch(ExcelConstants.SUGGESTED_TEMPLATE_FILE_NAME)
         },
         onExportEventClick = viewModel::exportEvents,
         onEventListItemClick = { onEventListItemClick(navigator, it) },
