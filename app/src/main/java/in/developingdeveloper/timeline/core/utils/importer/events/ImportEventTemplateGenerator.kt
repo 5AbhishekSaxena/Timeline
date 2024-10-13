@@ -22,7 +22,7 @@ class ImportEventTemplateGenerator @Inject constructor(
                 "S.No.",
                 "Id(Please leave blank)",
                 "Title",
-                "Occurred On(YYYY/MM/DD)",
+                "Occurred On(YYYY-MM-DD)",
                 "Tags(separate tags using ',')",
             )
 
