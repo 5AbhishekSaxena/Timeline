@@ -189,8 +189,27 @@ class EventListViewModel @Inject constructor(
         }
     }
 
+    fun onImportEventClick() {
+        _viewState.update { it.copy(isImportingEvents = true, isImportEventDialogShown = true) }
+    }
+
+    fun dismissImportingEventsDialog() {
+        _viewState.update { it.copy(isImportEventDialogShown = false) }
+    }
+
+    fun onIsImportingEventsCompleted() {
+        viewModelScope.launch {
+            delay(4.seconds)
+            _viewState.update {
+                it.copy(exportStatusMessage = null)
+            }
+        }
+    }
+
     fun onGenerateImportEventTemplateClick(fileUri: Uri) {
         viewModelScope.launch {
+            dismissImportingEventsDialog()
+
             generateImportEventTemplateUseCase(fileUri)
                 .onEach(::handleGenerateImportEventTemplateResult)
                 .collect()
@@ -221,7 +240,13 @@ class EventListViewModel @Inject constructor(
     private fun handleGenerateImportEventTemplateSuccessResult(
         result: ImportEventTemplateGeneratorResult.Success<String>,
     ) {
-        _viewState.update { it.copy(importEventTemplateFilePath = result.data) }
+        _viewState.update {
+            it.copy(
+                importEventTemplateFilePath = result.data,
+                exportStatusMessage = "Template generated successfully.",
+                isImportingEvents = false,
+            )
+        }
     }
 
     private fun handleGenerateImportEventTemplateFailureResult(
@@ -229,7 +254,8 @@ class EventListViewModel @Inject constructor(
     ) {
         _viewState.update {
             it.copy(
-                alertMessage = result.error.message ?: "Failed to export template.",
+                exportStatusMessage = result.error.message ?: "Failed to export template.",
+                isImportingEvents = false,
             )
         }
     }
