@@ -39,6 +39,11 @@ interface EventDao {
         saveEventTagCrossRef(tags, event)
     }
 
+    @Transaction
+    suspend fun saveEventsWithTags(eventWithTags: List<PersistableEventWithTags>) {
+        eventWithTags.forEach { saveEventWithTags(it) }
+    }
+
     @Update
     suspend fun updateEvent(event: PersistableEvent)
 

@@ -10,4 +10,8 @@ class DefaultAddTagRepository @Inject constructor(
     override suspend fun addTag(tag: Tag) {
         tagDataSource.insertTag(tag)
     }
+
+    override suspend fun addTags(tags: List<Tag>) {
+        tagDataSource.insertTags(tags)
+    }
 }

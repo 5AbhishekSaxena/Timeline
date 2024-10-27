@@ -1,16 +1,15 @@
 package `in`.developingdeveloper.timeline.eventlist.ui
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
 import `in`.developingdeveloper.timeline.core.domain.tags.models.Tag
 import `in`.developingdeveloper.timeline.core.utils.export.excel.EventExporterResult
-import `in`.developingdeveloper.timeline.core.utils.importer.events.ExcelParser
 import `in`.developingdeveloper.timeline.core.utils.importer.events.ImportEventTemplateGeneratorResult
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.EventExporterUseCase
+import `in`.developingdeveloper.timeline.eventlist.domain.usescases.EventImporterUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GenerateImportEventTemplateUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GetAllEventsUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.SaveDestinationUriUseCase
@@ -42,7 +41,7 @@ class EventListViewModel @Inject constructor(
     private val eventExporterUseCase: EventExporterUseCase,
     private val saveDestinationUriUseCase: SaveDestinationUriUseCase,
     private val generateImportEventTemplateUseCase: GenerateImportEventTemplateUseCase,
-    private val parser: ExcelParser,
+    private val eventImporterUseCase: EventImporterUseCase,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(EventListViewState.Initial)
@@ -272,10 +271,8 @@ class EventListViewModel @Inject constructor(
     fun onFileSelectedForEventImport(fileUri: Uri?) {
         if (fileUri == null) return
         viewModelScope.launch {
-            Log.e("EventListScreen", "EventListScreen, file picked, uri: $fileUri")
             try {
-                val parsedEvents = parser.parse(fileUri)
-                Log.e(javaClass.name, "EventListScreen, parsedEvents: $parsedEvents")
+                eventImporterUseCase(fileUri.toString())
             } catch (exception: CancellationException) {
                 throw exception
             } catch (exception: Exception) {

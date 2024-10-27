@@ -12,6 +12,10 @@ class RoomTagDataSource @Inject constructor(
         tagDao.insertTag(tag.toPersistableTag())
     }
 
+    override suspend fun insertTags(tags: List<Tag>) {
+        tagDao.insertTags(tags.map(Tag::toPersistableTag))
+    }
+
     override fun getAllTags(): Flow<List<Tag>> {
         return tagDao.getAllTags()
             .map(List<PersistableTag>::toTags)
@@ -19,6 +23,10 @@ class RoomTagDataSource @Inject constructor(
 
     override suspend fun getTagById(tagId: String): Tag? {
         return tagDao.getTagById(tagId)?.toTag()
+    }
+
+    override suspend fun getTagsByLabels(labels: List<String>): List<Tag> {
+        return tagDao.getTagsByLabel(labels).map(PersistableTag::toTag)
     }
 
     override suspend fun updateTag(tag: Tag) {

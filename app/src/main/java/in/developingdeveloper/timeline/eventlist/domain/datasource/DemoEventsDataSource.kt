@@ -37,6 +37,8 @@ class DemoEventsDataSource @Inject constructor() : EventsDataSource {
 
     override suspend fun addEvent(event: Event) = Unit
 
+    override suspend fun addEvents(events: List<Event>) = Unit
+
     override suspend fun updateEvent(event: Event) = Unit
 
     override suspend fun deleteEvent(eventId: String) = Unit

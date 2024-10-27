@@ -17,4 +17,8 @@ class DefaultTagRepository @Inject constructor(
     override suspend fun getTagById(tagId: String): Tag {
         return tagDataSource.getTagById(tagId) ?: throw TimelineException("Tag with id $tagId not found.")
     }
+
+    override suspend fun getTagsByLabels(labels: List<String>): List<Tag> {
+        return tagDataSource.getTagsByLabels(labels)
+    }
 }
