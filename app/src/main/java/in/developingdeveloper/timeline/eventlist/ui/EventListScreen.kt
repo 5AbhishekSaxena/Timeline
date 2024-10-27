@@ -70,6 +70,11 @@ fun EventListScreen(
         viewModel.onIsImportingEventsCompleted()
     }
 
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = viewModel::onFileSelectedForEventImport,
+    )
+
     EventListContent(
         viewState = viewState,
         onAlertMessageShown = viewModel::onAlertMessageShown,
@@ -77,6 +82,9 @@ fun EventListScreen(
         onImportDialogDismiss = viewModel::dismissImportingEventsDialog,
         onImportDialogGenerateTemplateClick = {
             importEventsGalleryLauncher.launch(ExcelConstants.SUGGESTED_TEMPLATE_FILE_NAME)
+        },
+        onFilePickerClick = {
+            launcher.launch(arrayOf(ExcelConstants.EXCEL_MIME_TYPE))
         },
         onExportEventClick = viewModel::exportEvents,
         onEventListItemClick = { onEventListItemClick(navigator, it) },

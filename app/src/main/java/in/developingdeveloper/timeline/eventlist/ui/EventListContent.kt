@@ -2,6 +2,7 @@ package `in`.developingdeveloper.timeline.eventlist.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,6 +57,7 @@ fun EventListContent(
     onImportEventClick: () -> Unit,
     onImportDialogDismiss: () -> Unit,
     onImportDialogGenerateTemplateClick: () -> Unit,
+    onFilePickerClick: () -> Unit,
     onExportEventClick: () -> Unit,
     onEventListItemClick: (UIEventListItem) -> Unit,
     onAddEventClick: () -> Unit,
@@ -75,6 +77,7 @@ fun EventListContent(
     if (viewState.isImportEventDialogShown) {
         ImportEventsDialog(
             onDismiss = onImportDialogDismiss,
+            onFilePickerClick = onFilePickerClick,
             onGenerateTemplateClick = onImportDialogGenerateTemplateClick,
         )
     }
@@ -134,6 +137,7 @@ fun EventListContent(
 @Composable
 private fun ImportEventsDialog(
     onDismiss: () -> Unit,
+    onFilePickerClick: () -> Unit,
     onGenerateTemplateClick: () -> Unit,
 ) {
     Dialog(
@@ -153,6 +157,7 @@ private fun ImportEventsDialog(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .clickable(onClick = onFilePickerClick)
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color.LightGray)
                         .padding(12.dp),
@@ -298,6 +303,7 @@ private fun EventListContentPreview() {
                 onImportEventClick = {},
                 onImportDialogDismiss = {},
                 onImportDialogGenerateTemplateClick = {},
+                onFilePickerClick = {},
                 onExportEventClick = {},
                 onEventListItemClick = {},
                 onAddEventClick = {},

@@ -1,12 +1,14 @@
 package `in`.developingdeveloper.timeline.eventlist.ui
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
 import `in`.developingdeveloper.timeline.core.domain.tags.models.Tag
 import `in`.developingdeveloper.timeline.core.utils.export.excel.EventExporterResult
+import `in`.developingdeveloper.timeline.core.utils.importer.events.ExcelParser
 import `in`.developingdeveloper.timeline.core.utils.importer.events.ImportEventTemplateGeneratorResult
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.EventExporterUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GenerateImportEventTemplateUseCase
@@ -14,6 +16,7 @@ import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GetAllEvents
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.SaveDestinationUriUseCase
 import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListViewState
 import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEventListItem
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,6 +42,7 @@ class EventListViewModel @Inject constructor(
     private val eventExporterUseCase: EventExporterUseCase,
     private val saveDestinationUriUseCase: SaveDestinationUriUseCase,
     private val generateImportEventTemplateUseCase: GenerateImportEventTemplateUseCase,
+    private val parser: ExcelParser,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(EventListViewState.Initial)
@@ -261,6 +265,22 @@ class EventListViewModel @Inject constructor(
                 exportStatusMessage = result.error.message ?: "Failed to export template.",
                 isImportingEvents = false,
             )
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    fun onFileSelectedForEventImport(fileUri: Uri?) {
+        if (fileUri == null) return
+        viewModelScope.launch {
+            Log.e("EventListScreen", "EventListScreen, file picked, uri: $fileUri")
+            try {
+                val parsedEvents = parser.parse(fileUri)
+                Log.e(javaClass.name, "EventListScreen, parsedEvents: $parsedEvents")
+            } catch (exception: CancellationException) {
+                throw exception
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
         }
     }
 }
