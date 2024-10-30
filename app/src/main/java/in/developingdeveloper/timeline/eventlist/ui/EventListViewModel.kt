@@ -7,16 +7,21 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
 import `in`.developingdeveloper.timeline.core.domain.tags.models.Tag
 import `in`.developingdeveloper.timeline.core.utils.export.excel.EventExporterResult
+import `in`.developingdeveloper.timeline.core.utils.importer.events.ImportEventTemplateGeneratorResult
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.EventExporterUseCase
+import `in`.developingdeveloper.timeline.eventlist.domain.usescases.EventImporterUseCase
+import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GenerateImportEventTemplateUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.GetAllEventsUseCase
 import `in`.developingdeveloper.timeline.eventlist.domain.usescases.SaveDestinationUriUseCase
 import `in`.developingdeveloper.timeline.eventlist.ui.models.EventListViewState
 import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEventListItem
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -35,6 +40,8 @@ class EventListViewModel @Inject constructor(
     private val getAllEventsUseCase: GetAllEventsUseCase,
     private val eventExporterUseCase: EventExporterUseCase,
     private val saveDestinationUriUseCase: SaveDestinationUriUseCase,
+    private val generateImportEventTemplateUseCase: GenerateImportEventTemplateUseCase,
+    private val eventImporterUseCase: EventImporterUseCase,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(EventListViewState.Initial)
@@ -181,6 +188,98 @@ class EventListViewModel @Inject constructor(
                     isExportingEvents = false,
                     exportStatusMessage = null,
                 )
+            }
+        }
+    }
+
+    fun onImportEventClick() {
+        _viewState.update { it.copy(isImportingEvents = true, isImportEventDialogShown = true) }
+    }
+
+    private fun closeImportingEventsDialog() {
+        _viewState.update { it.copy(isImportEventDialogShown = false) }
+    }
+
+    fun dismissImportingEventsDialog() {
+        _viewState.update { it.copy(isImportEventDialogShown = false, isImportingEvents = false) }
+    }
+
+    fun onIsImportingEventsCompleted() {
+        viewModelScope.launch {
+            delay(4.seconds)
+            _viewState.update {
+                it.copy(exportStatusMessage = null)
+            }
+        }
+    }
+
+    fun onGenerateImportEventTemplateClick(fileUri: Uri) {
+        viewModelScope.launch {
+            closeImportingEventsDialog()
+
+            generateImportEventTemplateUseCase(fileUri)
+                .onEach(::handleGenerateImportEventTemplateResult)
+                .collect()
+        }
+    }
+
+    private fun handleGenerateImportEventTemplateResult(
+        result: ImportEventTemplateGeneratorResult<String>,
+    ) {
+        when (result) {
+            is ImportEventTemplateGeneratorResult.StatusUpdate ->
+                handleGenerateImportEventTemplateStatusUpdateResult(result)
+
+            is ImportEventTemplateGeneratorResult.Success ->
+                handleGenerateImportEventTemplateSuccessResult(result)
+
+            is ImportEventTemplateGeneratorResult.Failure ->
+                handleGenerateImportEventTemplateFailureResult(result)
+        }
+    }
+
+    private fun handleGenerateImportEventTemplateStatusUpdateResult(
+        result: ImportEventTemplateGeneratorResult.StatusUpdate,
+    ) {
+        _viewState.update { it.copy(exportStatusMessage = result.status) }
+    }
+
+    private fun handleGenerateImportEventTemplateSuccessResult(
+        result: ImportEventTemplateGeneratorResult.Success<String>,
+    ) {
+        _viewState.update {
+            it.copy(
+                importEventTemplateFilePath = result.data,
+                exportStatusMessage = "Template generated successfully.",
+                isImportingEvents = false,
+            )
+        }
+    }
+
+    private fun handleGenerateImportEventTemplateFailureResult(
+        result: ImportEventTemplateGeneratorResult.Failure,
+    ) {
+        _viewState.update {
+            it.copy(
+                exportStatusMessage = result.error.message ?: "Failed to export template.",
+                isImportingEvents = false,
+            )
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    fun onFileSelectedForEventImport(fileUri: Uri?) {
+        if (fileUri == null) return
+        viewModelScope.launch {
+            try {
+                _viewState.update { it.copy(isImportEventDialogShown = false) }
+                eventImporterUseCase(fileUri.toString())
+            } catch (exception: CancellationException) {
+                throw exception
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            } finally {
+                _viewState.update { it.copy(isImportingEvents = false) }
             }
         }
     }

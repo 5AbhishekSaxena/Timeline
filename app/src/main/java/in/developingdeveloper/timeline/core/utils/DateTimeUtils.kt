@@ -41,3 +41,7 @@ fun LocalDateTime.formatDateForUI(): String {
 fun LocalDateTime.formatDateTimeWithCompleteData(): String {
     return this.format(completeDataDateTimeFormatter) ?: this.toString()
 }
+
+fun String.parseLocalDateTime(): LocalDateTime {
+    return LocalDateTime.parse(this, completeDataDateTimeFormatter)
+}

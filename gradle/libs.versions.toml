@@ -32,7 +32,7 @@ data-store = "1.0.0"
 room = "2.5.0"
 
 # https://mvnrepository.com/artifact/org.apache.poi/poi
-apache-poi = "5.1.0"
+apache-poi = "5.2.3"
 
 # https://github.com/junit-team/junit4/releases
 junit = "4.13.2"

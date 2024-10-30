@@ -5,9 +5,12 @@ data class EventListViewState(
     val loading: Boolean,
     val alertMessage: String?,
     val errorMessage: String?,
+    val isImportEventDialogShown: Boolean,
+    val isImportingEvents: Boolean,
     val isExportingEvents: Boolean,
     val requestForEventExportDestination: Boolean,
     val exportStatusMessage: String?,
+    val importEventTemplateFilePath: String?,
 ) {
     companion object {
         val Initial = EventListViewState(
@@ -15,9 +18,12 @@ data class EventListViewState(
             loading = false,
             alertMessage = null,
             errorMessage = null,
+            isImportEventDialogShown = false,
+            isImportingEvents = false,
             isExportingEvents = false,
             requestForEventExportDestination = false,
             exportStatusMessage = null,
+            importEventTemplateFilePath = null,
         )
     }
 }

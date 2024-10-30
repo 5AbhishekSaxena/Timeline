@@ -17,6 +17,11 @@ class RoomEventsDataSource @Inject constructor(
         eventDao.saveEventWithTags(persistableEventWithTags)
     }
 
+    override suspend fun addEvents(events: List<Event>) {
+        val persistableEventWithTags = events.map(Event::toPersistableEventsWithTags)
+        eventDao.saveEventsWithTags(persistableEventWithTags)
+    }
+
     override fun getAllEvents(): Flow<List<Event>> {
         return eventDao.getAllEvents()
             .map(List<PersistableEventWithTags>::toEvents)

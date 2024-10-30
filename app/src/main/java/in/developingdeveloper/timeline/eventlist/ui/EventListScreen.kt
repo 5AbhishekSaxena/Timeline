@@ -14,6 +14,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import `in`.developingdeveloper.timeline.core.utils.ExcelConstants
 import `in`.developingdeveloper.timeline.destinations.ModifyEventScreenDestination
 import `in`.developingdeveloper.timeline.destinations.SettingsScreenDestination
 import `in`.developingdeveloper.timeline.eventlist.ui.models.UIEventListItem
@@ -29,6 +30,14 @@ fun EventListScreen(
     val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
+
+    val importEventsGalleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument(ExcelConstants.EXCEL_MIME_TYPE),
+        onResult = { uri ->
+            if (uri == null) return@rememberLauncherForActivityResult
+            viewModel.onGenerateImportEventTemplateClick(uri)
+        },
+    )
 
     val exportLocationLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocumentTree(),
@@ -56,9 +65,27 @@ fun EventListScreen(
         }
     }
 
+    LaunchedEffect(viewState.isImportingEvents) {
+        if (viewState.isImportingEvents) return@LaunchedEffect
+        viewModel.onIsImportingEventsCompleted()
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = viewModel::onFileSelectedForEventImport,
+    )
+
     EventListContent(
         viewState = viewState,
         onAlertMessageShown = viewModel::onAlertMessageShown,
+        onImportEventClick = viewModel::onImportEventClick,
+        onImportDialogDismiss = viewModel::dismissImportingEventsDialog,
+        onImportDialogGenerateTemplateClick = {
+            importEventsGalleryLauncher.launch(ExcelConstants.SUGGESTED_TEMPLATE_FILE_NAME)
+        },
+        onFilePickerClick = {
+            launcher.launch(arrayOf(ExcelConstants.EXCEL_MIME_TYPE))
+        },
         onExportEventClick = viewModel::exportEvents,
         onEventListItemClick = { onEventListItemClick(navigator, it) },
         onAddEventClick = { onAddEventClick(navigator) },

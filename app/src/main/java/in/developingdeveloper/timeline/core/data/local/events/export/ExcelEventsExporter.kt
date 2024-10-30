@@ -2,19 +2,24 @@ package `in`.developingdeveloper.timeline.core.data.local.events.export
 
 import android.net.Uri
 import `in`.developingdeveloper.timeline.core.domain.event.models.Event
+import `in`.developingdeveloper.timeline.core.utils.ExcelConstants
 import `in`.developingdeveloper.timeline.core.utils.export.excel.EventExporterResult
 import `in`.developingdeveloper.timeline.core.utils.export.excel.EventFileExporter
 import `in`.developingdeveloper.timeline.core.utils.export.excel.ExcelFileWriter
+import `in`.developingdeveloper.timeline.core.utils.export.excel.FileCreator
 import `in`.developingdeveloper.timeline.core.utils.formatDateTimeWithCompleteData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import org.apache.poi.ss.usermodel.Workbook
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class ExcelEventsExporter @Inject constructor(
     private val writer: ExcelFileWriter,
     private val exporter: EventFileExporter,
+    private val fileCreator: FileCreator,
 ) : EventsExporter {
     override fun export(destination: Uri, events: List<Event>): Flow<EventExporterResult<String>> =
         flow {
@@ -57,8 +62,27 @@ class ExcelEventsExporter @Inject constructor(
         workbook: Workbook,
     ) {
         emit(EventExporterResult.StatusUpdate("Saving events to Excel"))
-        val excelFileExporterResult = exporter.export(destination, workbook)
-        handleExcelFileExporterResult(excelFileExporterResult)
+        val fileName = generateFileName()
+        val fileCreatorResult = fileCreator.create(destination, fileName, ExcelConstants.EXCEL_MIME_TYPE)
+        fileCreatorResult.fold(
+            onSuccess = {
+                val excelFileExporterResult = exporter.export(destination, workbook)
+                handleExcelFileExporterResult(excelFileExporterResult)
+            },
+            onFailure = {
+                emit(
+                    EventExporterResult.Failure(
+                        it,
+                        source = EventExporterResult.Failure.Source.WRITER,
+                    ),
+                )
+            },
+        )
+    }
+
+    private fun generateFileName(): String {
+        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-hh-mm-ss")
+        return "events-${dateTimeFormatter.format(LocalDateTime.now())}.xlsx"
     }
 
     private suspend fun FlowCollector<EventExporterResult<String>>.handleExcelFileExporterResult(

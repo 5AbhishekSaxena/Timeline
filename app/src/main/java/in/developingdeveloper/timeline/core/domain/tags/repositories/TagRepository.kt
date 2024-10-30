@@ -7,4 +7,5 @@ interface TagRepository {
 
     fun getAllTags(): Flow<List<Tag>>
     suspend fun getTagById(tagId: String): Tag
+    suspend fun getTagsByLabels(labels: List<String>): List<Tag>
 }

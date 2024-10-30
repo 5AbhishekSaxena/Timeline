@@ -10,4 +10,8 @@ class DefaultAddEventRepository @Inject constructor(
     override suspend fun addEvent(event: Event) {
         eventDataSource.addEvent(event)
     }
+
+    override suspend fun addEvents(events: List<Event>) {
+        eventDataSource.addEvents(events)
+    }
 }

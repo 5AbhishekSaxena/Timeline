@@ -14,11 +14,17 @@ interface TagDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTag(tag: PersistableTag)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTags(tags: List<PersistableTag>)
+
     @Query("SELECT * FROM tags")
     fun getAllTags(): Flow<List<PersistableTag>>
 
     @Query("SELECT * FROM tags  WHERE tag_id = :tagId")
     suspend fun getTagById(tagId: String): PersistableTag?
+
+    @Query("SELECT * FROM tags WHERE label IN (:labels)")
+    suspend fun getTagsByLabel(labels: List<String>): List<PersistableTag>
 
     @Update
     suspend fun updateTag(tag: PersistableTag)
