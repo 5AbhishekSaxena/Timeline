@@ -272,11 +272,14 @@ class EventListViewModel @Inject constructor(
         if (fileUri == null) return
         viewModelScope.launch {
             try {
+                _viewState.update { it.copy(isImportEventDialogShown = false) }
                 eventImporterUseCase(fileUri.toString())
             } catch (exception: CancellationException) {
                 throw exception
             } catch (exception: Exception) {
                 exception.printStackTrace()
+            } finally {
+                _viewState.update { it.copy(isImportingEvents = false) }
             }
         }
     }
